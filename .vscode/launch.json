@@ -14,7 +14,7 @@
             "cwd": "${workspaceFolder}",
             "env": {},
             "envFile": "${workspaceFolder}/.env",
-            // just for sys.stdin.readline()----> "console": "integratedTerminal",
+            "console": "integratedTerminal",
             "debugOptions": [
                 "RedirectOutput"
             ]
