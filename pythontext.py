@@ -1,53 +1,63 @@
 import random
 import sys
 import os
+import timeit
 
-grocery4 = ['Juice', "tomato", 'grapes']
+# open first file, and write values to it
+with open("test_file1.txt", 'w+', encoding = 'utf-8') as f1:
+    f1.write("one\n")
+    f1.write("two\n")
+    f1.write("three\n")
+    f1.write("four\n")
+    f1.write("five")
+# read each line in the file, and put into list
 
-print('First Item: ', grocery4[0])
+with open("test_file1.txt", 'r', encoding = 'utf-8') as f1:
+    list1 = f1.read().splitlines()
 
-print(grocery4)
+# print new list
+print(list1)
+print('\n')
 
-grocery4[0] = "Green Juice"
+with open("test_file2.txt", 'w+', encoding = 'utf-8') as f2:
+    f2.write("three\n")
+    f2.write("four\n")
+    f2.write("five\n")
+    f2.write("six\n")
+    f2.write("seven")
+    # read each line in the file, and put into list
+with open("test_file2.txt", 'r', encoding = 'utf-8') as f2:
+    list2 = f2.read().splitlines()
 
-print('Actual First Item: ', grocery4[0])
+# print new list
+print(list2)
+print('\n')
 
-print(grocery4)
-grocery4.insert(0, 'Toothpaste')
-print(grocery4[0:5])
-print(grocery4[0:4])
+# add the two lists, then dedup the resultant list
+#store the new list
+list3 = list(dict.fromkeys(list1 + list2))
 
-grocery4.append('Soap')
+# print the new list
+print(list3)
+print('\n')
 
-print(grocery4[0:5])
+# write the new list to a new file
+with open("final_file.txt", 'w+', encoding = 'utf-8') as f3:
+    # write the new list with new line for each index
+    f3.write('\n'.join(list3))
 
-print(grocery4.extend(['more', 'and more']))
+# print the list to check to see the order is the same
+print(list3)
 
-print(grocery4)
+# change the reading the file now
+with open("final_file.txt", 'r', encoding = 'utf-8') as f3:
+# check that the list can be read on different lines
+    list4 = f3.read().splitlines()
 
-print(grocery4[0:7])
+# don't need to create a new pointer... but I want to
+listcheck = list4
+# see if the print can work
+print(listcheck)
 
-print('Number index of more: ', grocery4.index('more'))
-
-other_events = ['Wash Car', 'Pick up', 'ash check']
-to_do = [other_events, grocery4]
-print(to_do)
-print(to_do[1][0])
-print('\n' *3, grocery4)
-grocery4.append('Onions')
-print(grocery4)
-
-print(to_do)
-
-grocery4.insert(1, 'Pickle')
-
-# sorted() creates a new list
-# sort() changes the old list, mutating it, and you cannot go back
-
-print('\n'*2)
-print("1 ", grocery4)
-print("2 ", grocery4)
-print("3 ", sorted(grocery4))
-print("4 ", grocery4)
-grocery4.sort() # Not printed
-print("5 ", grocery4)
+# print the end
+print("2 files created: text_file1.txt, text_file2.txt\nduplicates removed\nresultant is stored in final_file.txt")
