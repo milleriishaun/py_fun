@@ -15,6 +15,7 @@ def fibo(num1):
             return fibo(num1)
 '''
 
+'''
 # Try 2, Success!
 # REMEMBER that a recursive function is like
 # Fn = Fn-2 + Fn-1
@@ -37,8 +38,15 @@ x = int(input("Fibonachi of number: "))
 # print the results
 print("Fibonacci of {} is {}".format(x, fibo(x)))
 
-
+# figure out how to define values
+for i in range(x+1):
+    print("{}".format(fibo(i)), end = "")
+    if i < x:
+        print(", ", end = "")
+print('\nAll done!')
 '''
+
+
 # Pro's try
 # 1, 1, 2, 3, 5, 8, 13
 
@@ -62,4 +70,24 @@ def fib(n):
 print(fib(3))
 print(fib(4))
 print(fib(5))
-'''
+
+# Ask how many numbers they want
+numFibValues = int(input("How many Fibonacci
+    values should be found: "))
+
+# loop while calling for each new number
+i = 1
+
+while i < numFivValues:
+
+    fibValue = fib(i)
+
+    print(fibValue)
+
+    i += 1
+
+# Print the result and increment
+print("All done")
+
+
+
