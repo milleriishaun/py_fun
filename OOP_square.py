@@ -38,6 +38,7 @@ class Square:
             print("Please only enter numbers for width")
 
     def getArea(self):
+        self.__width = int(self.__width) * (int(self.__height))
         return int(self.__width) * (int(self.__height))
 
 def main():
@@ -52,7 +53,9 @@ def main():
 
     print("Height: ", aSquare.height)
     print("Width: ", aSquare.width)
+    print(aSquare.width)
+    aSquare.width = str(aSquare.getArea())
+    print(aSquare.width)
 
-    print("The area is: ", aSquare.getArea())
 
 main()
