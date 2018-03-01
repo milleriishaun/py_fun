@@ -61,5 +61,4 @@ def main():
     print("Sum: ", getSum(1,2,3,4,5))
 
 
-
 main()
