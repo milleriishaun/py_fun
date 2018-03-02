@@ -72,22 +72,17 @@ print(fib(4))
 print(fib(5))
 
 # Ask how many numbers they want
-numFibValues = int(input("How many Fibonacci
-    values should be found: "))
+numFibValues = int(input("How many Fibonacci"\
+    "values should be found: "))
 
 # loop while calling for each new number
 i = 1
 
-while i < numFivValues:
+while i < numFibValues:
 
     fibValue = fib(i)
-
     print(fibValue)
-
     i += 1
 
 # Print the result and increment
 print("All done")
-
-
-
