@@ -92,6 +92,7 @@ print(chonchito.toString())
 # refer to objects as their superclass,
 # and automatically have the correct functions called,
 # automatically.
+# passing a class into a func of a certain class
 class AnimalTesting:
     def get_type(self, animal):
         animal.get_type()
