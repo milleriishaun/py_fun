@@ -1,3 +1,6 @@
+
+# I need practice with this stuff, though
+# simple ones are pretty easy, and I don't mind
 # List comprehension
 # does: launch an expression against an iterable, then condition for iterable
 # while powerful, try not to make ones that are hard to understand
