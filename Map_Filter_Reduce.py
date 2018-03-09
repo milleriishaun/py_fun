@@ -26,4 +26,8 @@ print(list(filter((lambda x: x % 2 == 0), range(1, 11))))
 # Receives a list and returns a single result
 from functools import reduce
 # Adding up a some values in a list
+# reduces uses the indices to add them. Making one index x and the next y
+# as far as I understand, this helps reduce the operations to one line
+# Actually reduce is like a nested function call, adding again the result
 print(reduce((lambda x, y: x + y), range(1, 6)))
+
