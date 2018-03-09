@@ -55,12 +55,16 @@
 
 # randStr = "Here is \\stuff"
 
-# Use r... raw string
+# # Use r... raw string
+# # doesnt work
+# print("Find \\stuff :", re.search("\\stuff", randStr))
+# # Does work
+# print("Find \\stuff :", re.search("\\\\stuff", randStr))
 # print("Find \\stuff :", re.search(r"\\stuff", randStr))
 
 # randStr2 = "F.B.I. I.R.S. CIA"
 
-# Match a period(.) using a backslash
+# # Match a period(.) using a backslash, because regex hurts it
 # print("Matches: ", len(re.findall(".\..\..\.", randStr2)))
 
 # randStr3 = '''This is a long
@@ -70,12 +74,12 @@
 
 # print(randStr3)
 
-# remove the new lines
+# # remove the new lines
 # regex = re.compile("\n")
 
 # print(randStr3)
 
-# Removes the new lines, and replaces with a space
+# # Removes the new lines, and replaces with a space
 # randStr3 = regex.sub(" ", randStr3)
 
 # print(randStr3)
@@ -143,6 +147,15 @@
 
 # print("Email Matches: ", len(re.findall("[\w._%+-]{1,20}@[\w.-]{2,20}.[A-Za-z]{2,3}", emaillist)))
 
+
+# Try 2, success!
+# x = "agdfgaf@gmail j@fjj.com JEIIii1123@gmail.com akfjsdfkFEFDF@fail.s"
+# str2 = re.finditer("[A-Za-z0-9_.%+-]{1,20}@[A-Za-z0-9.-]{2,20}\.[A-Za-z]{2,3}", x)
+# for i in str2:
+#     r = i.span()
+#     print(r)
+#     print("{}:{}".format(r[0], r[1]))
+
 # SUMMARY of REGEX
 
 # if research("REGEX", yourString)
@@ -174,7 +187,7 @@
 # {5,7}: Match values that are between 5 and 7 in length
 
 # Tutorial 2 about REGEX
-
+'''
 import re
 
 randStr = "cat cats"
@@ -199,10 +212,10 @@ for i in matches:
 
 # New Problem!
 # create a regex that grabs each line of a string
-randStr = '''Just some words
+randStr = Just some words
 and some more\r
 and more
-'''
+
 regex = re.compile("[\w\s]+[\r]?\n")
 matches = re.findall(regex, randStr)
 for i in matches:
@@ -250,10 +263,10 @@ for i in matches:
 
 
 # Target each line in multiline string using ^
-randStr = '''Ape is big
+randStr = Ape is big
 Turtle is slow
 Cheetah is fast
-'''
+
 regex = re.compile(r"(?m)^.*?\s")
 matches = re.findall(regex, randStr)
 print(len(matches))
@@ -293,13 +306,15 @@ print(len(matches))
 print(matches[0][0])
 print(matches[0][1])
 
-
+'''
 # Tutorial 3 About REGEX
 
 
 # SUMMARY of REGEX
 
-# if research("REGEX", yourString)
+import re
+
+# if re.search("REGEX", yourString)
 # print("Matches: ", len(re.findall("REGEX", yourString)))
 # regex = re.compile("REGEX") # create a pattern method like regex.sub
 # yourString = regex.sub("substitution", yourString)
@@ -333,4 +348,80 @@ print(matches[0][1])
 # ($m) : Allow ^ on multiline string
 
 # Back References, Look Ahead, Look Behind, Negtive Look Ahead, Negative Look Behind
-# regex
+# # regex
+
+# randStr = "the cat cat fell out the window"
+
+
+# matches = re.findall(re.compile(r"(\b\w+)\s+\1"), randStr)
+
+# print("Matches: ", len(matches))
+
+# for i in matches:
+#     print(i)
+
+
+# this is to get the right number withhout the references
+# randStr = "<a href='#'><b>The Link</b></a>"
+
+
+# matches = re.findall(re.compile(r"<b>(.*?)</b>"), randStr)
+# print(randStr)
+
+# randStr = re.sub(re.compile(r"<b>(.*?)</b>"), r"\1", randStr)
+
+# print(randStr)
+
+# print("Matches: ", len(matches))
+
+# for i in matches:
+#     print(i)
+
+
+
+# this is to get the right number with the references
+# randStr = "412-555-1212"
+
+# regex = re.compile(r"([\d]{3})-([\d]{3}-[\d]{4})")
+
+# randStr = re.sub(regex, r"(\1)\2", randStr)
+
+# print(randStr)
+
+# Problem
+# Pro's Try... really smart guy
+# randStr = "https://www.youtube.com/ https://www.google.com/"
+
+# regex = re.compile(r"(https?://([\w.]+/))")
+
+# print(regex)
+
+# randStr = re.sub(regex, r"<a href='\1'>\2</a>\n", randStr)
+
+# print(randStr)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Try 1, my real attempt
+
+randStr = "https://www.youtube.com/ https://www.google.com/"
+
+
