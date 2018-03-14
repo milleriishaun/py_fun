@@ -7,5 +7,8 @@
         "test*.py"
     ],
     "python.unitTest.unittestEnabled": true,
-    "debug.allowBreakpointsEverywhere": true
+    "debug.allowBreakpointsEverywhere": true,
+    "python.linting.pylintEnabled": true,
+    // "python.linting.enabled": true,
+    "python.linting.lintOnSave": false
 }
