@@ -319,6 +319,16 @@ def bind_button(event=None):
     else:
         getDataButton.bind("<Button-1>", get_data)
 
+
+
+def binderFunct(event=None):
+    if boolVar.get():
+        checkBox.unbind("<Button-1>")
+    else:
+        checkBox.bind("<Button-1>", getData)
+
+
+
 def get_data(event=None):
     print("String: ", strVar.get())
     print("Integer: ", intVar.get())
@@ -354,8 +364,202 @@ getDataButton = Button(root, text="Get Data!")
 getDataButton.bind("<Button-1>", get_data)
 getDataButton.pack(side=LEFT)
 
+
+
 root.mainloop()
 '''
+
+
+
+
+
+'''
+# Try 2, next day, this one I had fun with even though I need a lot of review.
+# The modules are not sticking well because there is so much information
+# But if I make something that is actualy usful to me, I think i will increase in skill
+
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+
+
+# made the mistake of binding and unbinding the checkmark button
+# rather than the getData button, and that is why there was no progress.
+# Never get into the probelm of that again. So then I must not understand
+# what it means to bind and unbind just yet.
+def binderFunct(event=None):
+    if boolVar.get():
+        dataBut.unbind("<Button-1>")
+    else:
+        dataBut.bind("<Button-1>", getData)
+
+
+
+def getData(event=None):
+    print("String: ", strVar.get())
+    print("Integer: ", intVar.get())
+    print("Float: ", dblVar.get())
+    print("Boolean: ", boolVar.get())
+
+def openMsg():
+    messagebox.askquestion("Do you want to know what the Matrix really is?", "Red pill or the blue pill?")
+
+
+# don't forget to get the root
+root = Tk()
+
+frame = Frame(root)
+
+# Use variables to store the data types
+strVar = StringVar()
+intVar = IntVar()
+dblVar = DoubleVar()
+boolVar = BooleanVar()
+
+# set the variables with text
+strVar.set("Enter String: ")
+intVar.set("Enter Integer: ")
+dblVar.set("Enter Float: ")
+boolVar.set(True)
+
+# make the entry space
+strVar = Entry(root, textvariable=strVar)
+strVar.pack(side=LEFT)
+
+# make the entry space
+intVar = Entry(root, textvariable=intVar)
+intVar.pack(side=LEFT)
+
+# make the entry space
+dblVar = Entry(root, textvariable=dblVar)
+dblVar.pack(side=LEFT)
+
+# make the checkmark button
+checkBox = Checkbutton(root, text="Switch", variable=boolVar)
+checkBox.bind("<Button-1>", binderFunct)
+checkBox.pack(side=LEFT)
+
+# make the get data button
+dataBut = Button(root, text="Get Data!")
+dataBut.bind("<Button-1>", getData)
+dataBut.pack(side=LEFT)
+
+style = ttk.Style()
+style.configure("TButton",
+                bg="midnight blue",
+                fg="green",
+                padding=20,
+                font="Arial 40 bold")
+
+theButton = Button(frame, text="Yo yo yo", command=openMsg)
+theButton.pack()
+
+frame.pack()
+root.mainloop()
+'''
+
+
+
+
+
+
+
+
+
+
+'''
+# Some kind of useful functioning
+# How about a questioning app. I should look online for more tutorials.
+# Just make something you like? The problem is that I don't know how stuff works together.
+from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+'''
+
+
+
+'''
+# One responsive thing from this program which is interesting is the colorLog.insert(0.0, "Red\n")
+# every time the function is called. And you have to make sure to use 'takefocus'
+
+from tkinter import *
+
+root = Tk() #Makes the window
+root.wm_title("Window Title") #Makes the title that will appear in the top left
+root.config(bg="dark slate blue")
+root.geometry("600x600+300+300")
+
+def redCircle():
+    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='red')
+    colorLog.insert(0.0, "Red\n")
+
+def yelCircle():
+    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='yellow')
+    colorLog.insert(0.0, "Yellow\n")
+
+def grnCircle():
+    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='green')
+    colorLog.insert(0.0, "Green\n")
+
+# listbox = Listbox(root)
+# listbox.pack(fill=BOTH, expand=1)
+
+# for i in range(20):
+#     listbox.insert(END, str(i))
+
+#Left Frame and its contents
+leftFrame = Frame(root)
+leftFrame.grid(row=0, column=0, padx=5, pady=2)
+
+Label(leftFrame, text="Instructions:").grid(row=0, column=0, padx=10, pady=2)
+
+Instruct = Label(leftFrame, text="1\n2\n3\n4\n5\n6\n7\n8\n9\n", font="Mistral 22 bold")
+Instruct.grid(row=1, column=0, padx=10, pady=2)
+
+
+# Great way to see all the key/value pairs involved
+print(Instruct.keys())
+for items in Instruct.keys():
+    print(items, ': ', Instruct[items])
+
+
+try:
+    imageEx = PhotoImage(file = 'image.gif')
+    Label(leftFrame, image=imageEx).grid(row=2, column=0, padx=10, pady=2)
+except:
+    print("Image not found")
+
+#Right Frame and its contents
+rightFrame = Frame(root)
+rightFrame.grid(row=0, column=1, padx=10, pady=2)
+
+circleCanvas = Canvas(rightFrame, width=100, height=100, bg='white')
+circleCanvas.grid(row=0, column=0, padx=10, pady=2)
+
+btnFrame = Frame(rightFrame, width=200, height = 200)
+btnFrame.grid(row=1, column=0, padx=10, pady=2)
+
+colorLog = Text(rightFrame, width = 30, height = 10, takefocus=0)
+colorLog.grid(row=2, column=0, padx=10, pady=2)
+
+redBtn = Button(btnFrame, text="Red", command=redCircle)
+redBtn.grid(row=0, column=0, padx=10, pady=2)
+
+yellowBtn = Button(btnFrame, text="Yellow", command=yelCircle)
+yellowBtn.grid(row=0, column=1, padx=10, pady=2)
+
+greenBtn = Button(btnFrame, text="Green", command=grnCircle)
+greenBtn.grid(row=0, column=2, padx=10, pady=2)
+
+
+root.mainloop() #start monitoring and updating the GUI
+'''
+
+
+
+
+# Make this GUI for SOMETHING!
+
 
 
 
@@ -442,7 +646,7 @@ root.mainloop()
 
 
 
-
+'''
 # Try 1, used a lot of help
 from tkinter import *
 from tkinter import messagebox
@@ -474,3 +678,97 @@ someButton = ttk.Button(frame,
 someButton.pack()
 frame.pack()
 root.mainloop()
+'''
+
+
+
+'''
+# Try 2, Next day, needed a lot of help
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+
+def open_msg_box():
+    messagebox.showwarning("This alert!1", "This alert 2!")
+
+root = Tk()
+
+root.geometry("1000x700+300+300")
+
+root.resizable(width=False, height=False)
+
+frame = Frame(root)
+
+style = ttk.Style()
+
+style.configure("TButton",
+                text="This is craycray!",
+                fg="orange",
+                bg="midnight blue",
+                font="Times 20 bold",
+                padding=20)
+
+thisButton = ttk.Button(frame, text="Do it!", command=open_msg_box)
+
+thisButton.pack()
+
+frame.pack()
+
+root.mainloop()
+'''
+
+
+
+
+
+
+
+'''
+# Try 3, need to get used to using these commands actually down. I got better with them. But I forgot the past tutorials.open
+# I shoudl try to make a real project using what I know.
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+
+def open_msg_box():
+    messagebox.showwarning("black?", "Panther!")
+
+root = Tk()
+
+root.geometry("500x500+200+200")
+
+frame = Frame(root)
+
+style = ttk.Style()
+
+style.configure("TButton",
+                bg="midnight blue",
+                fg="pink",
+                padding=20,
+                font="Times 40 bold")
+
+theButton = ttk.Button(frame, text="This button", command=open_msg_box)
+
+theButton.pack()
+frame.pack()
+root.mainloop()
+'''
+
+
+
+
+
+
+
+# Next Example, using Tkinter
+
+
+
+
+
+
+
+
+# Better layout usage for the desktop app.
+
+
