@@ -555,11 +555,7 @@ greenBtn.grid(row=0, column=2, padx=10, pady=2)
 root.mainloop() #start monitoring and updating the GUI
 '''
 
-
-
-
-# Make this GUI for SOMETHING!
-
+#reveiw this stuff using TimeWatch app
 
 
 
