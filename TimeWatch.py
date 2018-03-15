@@ -1,5 +1,9 @@
 # Make this GUI for SOMETHING!
 # need GUI for TimeWatch app!
+# Nearly completed,
+# Need more tutorials to solve this correctly.
+# Not using proper format to get results correctly.
+# Need to use function and see how to properly organize the info.
 
 # Make the clock system
 
@@ -174,7 +178,7 @@ diffLab.grid(row=2, column=1, padx=5, pady=5)
 
 
 
-time_diff()
+# time_diff()
 # if (startTime['text']) and (stopTime['text']):
 #     time_diff()
 #     print('works')
