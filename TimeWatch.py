@@ -14,6 +14,7 @@ import time
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+from tkinter import font
 
 # Functions go here
 
@@ -42,61 +43,45 @@ def tick():
 def print_start(event=None):
     startBut.bind("<Button-1>")
     startTime['text'] = time1
-    startHourInt = int(timeHour1)
-    startMinInt = int(timeMin1)
-    startSecInt = int(timeSec1)
 
 def print_end(event=None):
     stopBut.bind("<Button-1>")
     stopTime['text'] = time1
-    stopHourInt = int(timeHour1)
-    stopMinInt = int(timeMin1)
-    stopSecInt = int(timeSec1)
 
-def time_diff(event=None):
-    if (stopHourInt-startHourInt) < 1:
-        startMinInt += 60
-        if stopMinInt-startMinInt < 0:
-            stopMinInt += 60
-    elif (stopMinInt-startMinInt) < 1:
-        startSecInt += 60
-        if stopSecInt-startSecInt < 0:
-            stopSecInt += 60
-    else:
-        diffHour = stopHourInt - startHourInt
-        diffMin = stopMinInt - startMinInt
-        diffSec = stopSecInt - startSecInt
-        print(diffHour+':'+diffMin+':'+diffSec)
-        diffTime['text'] = diffHour
+def time_diff(*args):
 
+    try:
+        
+        if (stopHourInt-startHourInt) < 1:
+            startMinInt += 60
+            if stopMinInt-startMinInt < 0:
+                stopMinInt += 60
+        elif (stopMinInt-startMinInt) < 1:
+            startSecInt += 60
+            if stopSecInt-startSecInt < 0:
+                stopSecInt += 60
+        else:
+            diffHour = stopHourInt - startHourInt
+            diffMin = stopMinInt - startMinInt
+            diffSec = stopSecInt - startSecInt
+            print(diffHour+':'+diffMin+':'+diffSec)
+            diffTime['text'] = diffHour
+    except ValueError:
+        pass
 
 # Create a GUI for button to click to start the time and end the time
 
 # make the root
 root = Tk()
 
-time1 = ''
+time1 = StringVar()
 
-''' # basic time manipulation
-# get the current time...which is ticks
-ticks = time.time()
-
-# convert the time to readable time Tuple
-time2 = time.localtime(ticks)
-
-# set up a clock variable type stringVar
-clock = StringVar()
-# set the clock
-clock.set("{}:{}:{}".format(time2[3], time2[4], time2[5]))
-
-clock_var = clock.get()
-
-
-# superfluous print out of the clock just to make sure
-print(clock_var)
-'''
-
-
+# startHourInt = int(timeHour1)
+# startMinInt = int(timeMin1)
+# startSecInt = int(timeSec1)
+# stopHourInt = int(timeHour1)
+# stopMinInt = int(timeMin1)
+# stopSecInt = int(timeSec1)
 
 # Title the window
 root.wm_title("TimeWatch")
@@ -167,7 +152,7 @@ stopTime.grid(row=1, column=2, padx=5, pady=5)
 
 
 # Make third button
-diffBut = ttk.Button(frameBottom, text="Calc Difference!", command=print_end)
+diffBut = ttk.Button(frameBottom, text="Calc Difference!", command=time_diff)
 diffBut.bind("<Button-1>")
 # Position first button, will position better next time
 diffBut.grid(row=2, column=0, padx=5, pady=5)
@@ -186,7 +171,10 @@ diffLab.grid(row=2, column=1, padx=5, pady=5)
 diffTime = Label(frameBottom)
 diffTime.grid(row=2, column=2, padx=5, pady=5)
 
-
+# Show the available fonts
+for x in font.families():
+    print(x)
+    
 
 tick()
 

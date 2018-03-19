@@ -465,102 +465,6 @@ root.mainloop()
 
 
 
-
-
-'''
-# Some kind of useful functioning
-# How about a questioning app. I should look online for more tutorials.
-# Just make something you like? The problem is that I don't know how stuff works together.
-from tkinter import *
-from tkinter import ttk
-from tkinter import messagebox
-'''
-
-
-
-'''
-# One responsive thing from this program which is interesting is the colorLog.insert(0.0, "Red\n")
-# every time the function is called. And you have to make sure to use 'takefocus'
-
-from tkinter import *
-
-root = Tk() #Makes the window
-root.wm_title("Window Title") #Makes the title that will appear in the top left
-root.config(bg="dark slate blue")
-root.geometry("600x600+300+300")
-
-def redCircle():
-    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='red')
-    colorLog.insert(0.0, "Red\n")
-
-def yelCircle():
-    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='yellow')
-    colorLog.insert(0.0, "Yellow\n")
-
-def grnCircle():
-    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='green')
-    colorLog.insert(0.0, "Green\n")
-
-# listbox = Listbox(root)
-# listbox.pack(fill=BOTH, expand=1)
-
-# for i in range(20):
-#     listbox.insert(END, str(i))
-
-#Left Frame and its contents
-leftFrame = Frame(root)
-leftFrame.grid(row=0, column=0, padx=5, pady=2)
-
-Label(leftFrame, text="Instructions:").grid(row=0, column=0, padx=10, pady=2)
-
-Instruct = Label(leftFrame, text="1\n2\n3\n4\n5\n6\n7\n8\n9\n", font="Mistral 22 bold")
-Instruct.grid(row=1, column=0, padx=10, pady=2)
-
-
-# Great way to see all the key/value pairs involved
-print(Instruct.keys())
-for items in Instruct.keys():
-    print(items, ': ', Instruct[items])
-
-
-try:
-    imageEx = PhotoImage(file = 'image.gif')
-    Label(leftFrame, image=imageEx).grid(row=2, column=0, padx=10, pady=2)
-except:
-    print("Image not found")
-
-#Right Frame and its contents
-rightFrame = Frame(root)
-rightFrame.grid(row=0, column=1, padx=10, pady=2)
-
-circleCanvas = Canvas(rightFrame, width=100, height=100, bg='white')
-circleCanvas.grid(row=0, column=0, padx=10, pady=2)
-
-btnFrame = Frame(rightFrame, width=200, height = 200)
-btnFrame.grid(row=1, column=0, padx=10, pady=2)
-
-colorLog = Text(rightFrame, width = 30, height = 10, takefocus=0)
-colorLog.grid(row=2, column=0, padx=10, pady=2)
-
-redBtn = Button(btnFrame, text="Red", command=redCircle)
-redBtn.grid(row=0, column=0, padx=10, pady=2)
-
-yellowBtn = Button(btnFrame, text="Yellow", command=yelCircle)
-yellowBtn.grid(row=0, column=1, padx=10, pady=2)
-
-greenBtn = Button(btnFrame, text="Green", command=grnCircle)
-greenBtn.grid(row=0, column=2, padx=10, pady=2)
-
-
-root.mainloop() #start monitoring and updating the GUI
-'''
-
-#reveiw this stuff using TimeWatch app
-
-
-
-
-
 '''
 # Different ways to style the widgets
 from tkinter import *
@@ -755,8 +659,92 @@ root.mainloop()
 
 
 
+'''
+# Misc Youtuber Example, using Tkinter
+# This is a great example setup for Tkinter GUI projects
+from tkinter import *
 
-# Next Example, using Tkinter
+global count
+count =0
+class App():
+    
+    def reset(self):
+        global count
+        count=1
+        self.t.set('00:00:00')
+        
+    def start(self):
+        global count
+        count=0
+        self.start_timer()
+    
+    def start_timer(self):
+        global count
+        self.timer()
+    def stop(self):
+        global count
+        count=1
+        
+        
+    def timer(self):
+        global count
+        if(count==0):
+            self.d = str(self.t.get())
+            h,m,s = map(int,self.d.split(":"))
+            
+            h = int(h)
+            m=int(m)
+            s= int(s)
+            if(s<59):
+                s+=1
+            elif(s==59):
+                s=0
+                if(m<59):
+                    m+=1
+                elif(m==59):
+                    h+=1
+            if(h<10):
+                h = str(0)+str(h)
+            else:
+                h= str(h)
+            if(m<10):
+                m = str(0)+str(m)
+            else:
+                m = str(m)
+            if(s<10):
+                s=str(0)+str(s)
+            else:
+                s=str(s)
+            self.d=h+":"+m+":"+s
+            
+            
+            self.t.set(self.d)
+            if(count==0):
+                self.root.after(930,self.start_timer)
+            
+        
+    def __init__(self):
+        self.root=Tk()
+        self.root.title("Stop Watch")
+        self.root.geometry("600x500")
+        self.root.resizable(False,False)
+        self.t = StringVar()
+        self.t.set("00:00:00")
+        self.lb = Label(self.root,textvariable=self.t)
+        self.lb.config(font=("Courier 40 bold"))                
+        self.bt1 = Button(self.root,text="Start",command=self.start,font=("Courier 12 bold"))
+        self.bt2 = Button(self.root,text="Stop",command=self.stop,font=("Courier 12 bold"))
+        self.bt3 = Button(self.root,text="Reset",command=self.reset,font=("Courier 12 bold"))
+        self.lb.place(x=160,y=10)
+        self.bt1.place(x=130,y=100)
+        self.bt2.place(x=255,y=100)
+        self.bt3.place(x=370,y=100)
+        self.root.mainloop()
+    
+
+
+a = App()
+'''
 
 
 
@@ -765,6 +753,319 @@ root.mainloop()
 
 
 
+'''
+
+# This tutorial from someone else
+# http://www.tkdocs.com/tutorial/onepage.html
+from tkinter import *
+from tkinter import ttk
+
+# This is a calculate function with as many arguments as desired
+# it is within a try/except model
+# It marks the variable feet as a float, and gets the value from the main program
+# meters.set bu tthen we have to put in all the decimals to make it all float
+def calculate(*args):
+    try:
+        value = float(feet.get())
+        meters.set((0.3048 * value * 10000.0 + 0.5)/10000.0)
+    except ValueError:
+        pass
+    
+root = Tk()
+root.title("Feet to Meters")
+
+# I suppose people use mainframe to designate the Frame
+# They also use the more advanced ttk.Frame reference
+mainframe = ttk.Frame(root, padding="3 3 12 12")
+# The sticky is all around so that it can be stretched
+mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+# This makes it so that upon extra info, there is a resize of the window
+mainframe.columnconfigure(0, weight=1)
+mainframe.rowconfigure(0, weight=1)
+
+# Designate the type of the variable
+feet = StringVar()
+meters = StringVar()
+
+# Make the entry box
+feet_entry = ttk.Entry(mainframe, width=7, textvariable=feet)
+feet_entry.grid(column=2, row=1, sticky=(W, E))
+
+# Add the label for the meters, using meters variable
+ttk.Label(mainframe, textvariable=meters).grid(column=2, row=2, sticky=(W, E))
+
+# Add the button for the calculation
+ttk.Button(mainframe, text="Calculate", command=calculate).grid(column=3, row=3, sticky=W)
+
+# add extra labels to get info.
+ttk.Label(mainframe, text="feet").grid(column=3, row=1, sticky=W)
+ttk.Label(mainframe, text="is equivalent to").grid(column=1, row=2, sticky=E)
+ttk.Label(mainframe, text="meters").grid(column=3, row=2, sticky=W)
+
+# This is a loop using the child variable as storage
+# This checks the mainframe.winfo_children() iterable.
+# I don't really get why a iterable is returned but it is probably
+# a list
+# Either way, for each part of the list, the child needs to be configured with padding
+# all of the widgets that are children of our content frame get padding; shortcut
+for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
+
+# This gets the pointer to get into the box when it pops up
+feet_entry.focus()
+# This makes it so that if I press enter, it automatically calculates
+# It is interesting though because I can also click on the button for result
+root.bind('<Return>', calculate)
+
+# DOn't forget the main loop
+root.mainloop()
+
+'''
+
+
+
+
+
+
+
+'''
+# One responsive thing from this program which is interesting is the colorLog.insert(0.0, "Red\n")
+# every time the function is called. And you have to make sure to use 'takefocus'
+
+from tkinter import *
+
+root = Tk() #Makes the window
+root.wm_title("Window Title") #Makes the title that will appear in the top left
+root.config(bg="dark slate blue")
+root.geometry("600x600+300+300")
+
+def redCircle():
+    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='red')
+    colorLog.insert(0.0, "Red\n")
+
+def yelCircle():
+    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='yellow')
+    colorLog.insert(0.0, "Yellow\n")
+
+def grnCircle():
+    circleCanvas.create_oval(20, 20, 80, 80, width=0, fill='green')
+    colorLog.insert(0.0, "Green\n")
+
+# listbox = Listbox(root)
+# listbox.pack(fill=BOTH, expand=1)
+
+# for i in range(20):
+#     listbox.insert(END, str(i))
+
+#Left Frame and its contents
+leftFrame = Frame(root)
+leftFrame.grid(row=0, column=0, padx=5, pady=2)
+
+Label(leftFrame, text="Instructions:").grid(row=0, column=0, padx=10, pady=2)
+
+Instruct = Label(leftFrame, text="1\n2\n3\n4\n5\n6\n7\n8\n9\n", font="Mistral 22 bold")
+Instruct.grid(row=1, column=0, padx=10, pady=2)
+
+
+# Great way to see all the key/value pairs involved
+print(Instruct.keys())
+for items in Instruct.keys():
+    print(items, ': ', Instruct[items])
+
+
+try:
+    imageEx = PhotoImage(file = 'image.gif')
+    Label(leftFrame, image=imageEx).grid(row=2, column=0, padx=10, pady=2)
+except:
+    print("Image not found")
+
+#Right Frame and its contents
+rightFrame = Frame(root)
+rightFrame.grid(row=0, column=1, padx=10, pady=2)
+
+circleCanvas = Canvas(rightFrame, width=100, height=100, bg='white')
+circleCanvas.grid(row=0, column=0, padx=10, pady=2)
+
+btnFrame = Frame(rightFrame, width=200, height = 200)
+btnFrame.grid(row=1, column=0, padx=10, pady=2)
+
+colorLog = Text(rightFrame, width = 30, height = 10, takefocus=0)
+colorLog.grid(row=2, column=0, padx=10, pady=2)
+
+redBtn = Button(btnFrame, text="Red", command=redCircle)
+redBtn.grid(row=0, column=0, padx=10, pady=2)
+
+yellowBtn = Button(btnFrame, text="Yellow", command=yelCircle)
+yellowBtn.grid(row=0, column=1, padx=10, pady=2)
+
+greenBtn = Button(btnFrame, text="Green", command=grnCircle)
+greenBtn.grid(row=0, column=2, padx=10, pady=2)
+
+
+root.mainloop() #start monitoring and updating the GUI
+'''
+
+# ^review this stuff using TimeWatch app
+
+
+
+
+
+
+
+'''
+# Another Tutorial, by sentdex:
+# https://www.youtube.com/watch?v=Ccct5D2AyNM
+from tkinter import *
+from PIL import Image, ImageTk
+
+# It gets a Widget term passed through it within tkinter
+# there is a Frame class in tkinter which will be passed through
+class Window(Frame):
+
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+
+        # this going to be the master widget
+        self.master = master
+
+        #this is not built into tkinter
+        self.init_window()
+
+    def init_window(self):
+
+        # title of window
+        self.master.title("GUI")
+        self.pack(fill=BOTH, expand=1)
+
+        # quitButton = Button(self, text="Quit", command=self.client_exit)
+        # quitButton.place(x=0, y=0)
+        menu = Menu(self.master)
+        self.master.config(menu=menu)
+
+        # Create the file button
+        file = Menu(menu)
+        file.add_command(label='Exit', command=self.client_exit)
+        menu.add_cascade(label='File', menu=file)
+
+        # Create the dit button
+        edit = Menu(menu)
+        edit.add_command(label='Show Image', command=self.showImage)
+        edit.add_command(label='Show Text', command=self.showTxt)
+        menu.add_cascade(label='Edit', menu=edit)
+
+    def client_exit(self):
+        exit()
+
+    def showImage(self):
+        load = Image.open('pillow.png')
+        render = ImageTk.PhotoImage(load)
+        img = Label(self, image=render)
+        img.image = render
+        img.place(x=0, y=0)
+
+    def showTxt(self):
+        text = Label(self, text='z..zz..zzz')
+        text.pack()
+
+
+# this is aroot window
+root = Tk()
+root.geometry("400x300")
+
+# Window called of root
+app = Window(root)
+
+root.mainloop()
+'''
+
+
+
+
+
+
+'''
 # Better layout usage for the desktop app.
+# Edit this so it is rather for TimeWatch app
+from tkinter import *
+
+global count
+count =0
+class App():
+    
+    def reset(self):
+        global count
+        count=1
+        self.t.set('00:00:00')
+        
+    def start(self):
+        global count
+        count=0
+        self.start_timer()
+    
+    def start_timer(self):
+        global count
+        self.timer()
+    def stop(self):
+        global count
+        count=1
+        
+        
+    def timer(self):
+        global count
+        if(count==0):
+            self.d = str(self.t.get())
+            h,m,s = map(int,self.d.split(":"))
+            
+            h = int(h)
+            m=int(m)
+            s= int(s)
+            if(s<59):
+                s+=1
+            elif(s==59):
+                s=0
+                if(m<59):
+                    m+=1
+                elif(m==59):
+                    h+=1
+            if(h<10):
+                h = str(0)+str(h)
+            else:
+                h= str(h)
+            if(m<10):
+                m = str(0)+str(m)
+            else:
+                m = str(m)
+            if(s<10):
+                s=str(0)+str(s)
+            else:
+                s=str(s)
+            self.d=h+":"+m+":"+s
+            
+            
+            self.t.set(self.d)
+            if(count==0):
+                self.root.after(930,self.start_timer)
+            
+        
+    def __init__(self):
+        self.root=Tk()
+        self.root.title("Stop Watch")
+        self.root.geometry("600x500")
+        self.root.resizable(False,False)
+        self.t = StringVar()
+        self.t.set("00:00:00")
+        self.lb = Label(self.root,textvariable=self.t)
+        self.lb.config(font=("Courier 40 bold"))                
+        self.bt1 = Button(self.root,text="Start",command=self.start,font=("Courier 12 bold"))
+        self.bt2 = Button(self.root,text="Stop",command=self.stop,font=("Courier 12 bold"))
+        self.bt3 = Button(self.root,text="Reset",command=self.reset,font=("Courier 12 bold"))
+        self.lb.place(x=160,y=10)
+        self.bt1.place(x=130,y=100)
+        self.bt2.place(x=255,y=100)
+        self.bt3.place(x=370,y=100)
+        self.root.mainloop()
+    
 
 
+a = App()
+'''
