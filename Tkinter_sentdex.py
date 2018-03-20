@@ -67,10 +67,39 @@ def animate(i):
     # with the info, check which are bids and which are asks
     # This is a generated data set, and the last info was a UNIX timestamp
     # what is the datalink?
-    r = requests.get('https://api.coindesk.com/v1/bpi/historical/close.json')
-    dataLink = ''
 
+    # All the below makes the program go too slow and is not live
+    # r = requests.get('https://api.coindesk.com/v1/bpi/historical/close.json?start=2016-03-19&end=2018-03-19', verify=False)
+    # real data from few years
+    # get the BitCoin Price Index
+    # for k, v in r.json()['bpi'].items():
+    #     print(k, v)
+    # a.clear()
+    # a.plot(r.json()['bpi'].keys(), r.json()['bpi'].values())
+    
+    dataLink = "https://api.bitfinex.com/v1/trades/BTCUSD?limit_trades=2000"
+    data = urllib.request.urlopen(dataLink)
+    data = data.read().decode("utf-8")
+    data = json.loads(data)
+    # data = data["btc_usd"] is useless for us
 
+    data = pd.DataFrame(data)
+
+    # Buys
+    buys = data[(data["type"]=="buy")]# changed to match the api response bid is now buy
+    # datestamp
+    buys["datestamp"]= np.array(buys["timestamp"]).astype("datetime64[s]")
+    # throw it at matplotlib
+    buyDates = (buys["datestamp"]).tolist()
+
+    sells = data[(data["type"]=="sell")] # changed to match the api response ask is now sell
+    sells["datestamp"]= np.array(sells["timestamp"]).astype("datetime64[s]")
+    sellDates = (sells["datestamp"]).tolist()
+
+    a.clear()
+    a.plot_date(buyDates, buys["price"])
+    a.plot_date(sellDates,sells["price"])
+    
 '''
 #old animate using info from sampleData file
     pullData = open("sampleData.txt", "r").read()
