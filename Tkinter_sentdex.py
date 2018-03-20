@@ -36,7 +36,8 @@ import pandas as pd
 # number crunching
 import numpy as np
 
-
+# use requests to get data in json form
+import requests
 
 LARGE_FONT = ("Verdana", 12)
 
@@ -52,7 +53,26 @@ a = f.add_subplot(111)
 # we want to clear the data, so it isn't just adding graphs up and taking RAM
 
 # need an animation function using matplotlib
+# this is our main animation function
+# but the animation can update other things too,
+# animate function works with matplotlib, but animate can also
+# update the tkinter code... even though tkinter has its own update function
+# The core of the updates are going to happen in this animation
 def animate(i):
+    # need a data link
+    # use the BTC API
+    # we'll get the last trades(gives us historical data)...
+    # (as opposed to ticks which gives us info but not population of a graph right away) 
+    # for last trades... can do up to 2000 of the last ones
+    # with the info, check which are bids and which are asks
+    # This is a generated data set, and the last info was a UNIX timestamp
+    # what is the datalink?
+    r = requests.get('https://api.coindesk.com/v1/bpi/historical/close.json')
+    dataLink = ''
+
+
+'''
+#old animate using info from sampleData file
     pullData = open("sampleData.txt", "r").read()
     dataList = pullData.split('\n')
     xList = []
@@ -66,7 +86,7 @@ def animate(i):
     # now we want to clear all the data and redraw it
     a.clear()
     a.plot(xList, yList)
-
+'''
 
 
 
