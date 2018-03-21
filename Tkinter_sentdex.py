@@ -36,21 +36,55 @@ import pandas as pd
 # number crunching
 import numpy as np
 
-# use requests to get data in json form
-import requests
+from matplotlib import pyplot as plt
 
+
+SMALL_FONT = ("Verdana", 8)
+NORM_FONT = ("Verdana", 10)
 LARGE_FONT = ("Verdana", 12)
 
 # add a style for the graph
 style.use("ggplot")
 
 # display of the graph is hard to configure
-f = Figure(figsize=(5, 5), dpi=100)
+f = Figure()
 # add a subplot to this figure
 a = f.add_subplot(111)
 # add the plot point data (x[], y[])
 # a.plot([1,2,3,4,5,6,7,8], [5,6,1,3,8,9,3,5]) # not using this again
 # we want to clear the data, so it isn't just adding graphs up and taking RAM
+
+
+# we need to add an indicator counter, indicator updates the part even while
+# the graph only loads every 10 seconds
+# force an update
+exchange = "Bitfinex"
+datCounter = 9000
+programName = "bitfinex"
+
+
+
+def changeExchange(toWhat, pn):
+    global echange
+    global datCounter
+    global programName
+
+    exchange = toWhat
+    programName = pn
+    datCounter = 9000
+
+
+# popupmsg
+def popupmsg(msg):
+    # mini tkinter instance... notice mainloop
+    popup = tk.Tk()
+    popup.wm_title("!")
+    label = ttk.Label(popup, text=msg, font=NORM_FONT)
+    label.pack(side="top", fill="x", pady=10)
+    B1 = ttk.Button(popup, text="Okay", command=popup.destroy)
+    B1.pack()
+    popup.mainloop()
+
 
 # need an animation function using matplotlib
 # this is our main animation function
@@ -60,15 +94,15 @@ a = f.add_subplot(111)
 # The core of the updates are going to happen in this animation
 def animate(i):
     # need a data link
-    # use the BTC API
+    # use the BTC API... er the BITFINEX API
     # we'll get the last trades(gives us historical data)...
     # (as opposed to ticks which gives us info but not population of a graph right away) 
     # for last trades... can do up to 2000 of the last ones
     # with the info, check which are bids and which are asks
     # This is a generated data set, and the last info was a UNIX timestamp
-    # what is the datalink?
 
     # All the below makes the program go too slow and is not live
+    # even without this slow code, it is still slow to resize window
     # r = requests.get('https://api.coindesk.com/v1/bpi/historical/close.json?start=2016-03-19&end=2018-03-19', verify=False)
     # real data from few years
     # get the BitCoin Price Index
@@ -96,9 +130,17 @@ def animate(i):
     sells["datestamp"]= np.array(sells["timestamp"]).astype("datetime64[s]")
     sellDates = (sells["datestamp"]).tolist()
 
+    # update the graph
     a.clear()
-    a.plot_date(buyDates, buys["price"])
-    a.plot_date(sellDates,sells["price"])
+    a.plot_date(buyDates, buys["price"], "#00A3E0", label="buys")
+    a.plot_date(sellDates,sells["price"], "#183A54", label="sells")
+
+    # fix the legend to not cover the data
+    a.legend(bbox_to_anchor=(0, 1.02, 1, 1.02), loc=3,
+            ncol=2, borderaxespad=0)
+
+    title = "Bitfinex BTC/USD Prices\nLast Price: " + str(data["price"][99])
+    a.set_title(title)
     
 '''
 #old animate using info from sampleData file
@@ -136,6 +178,27 @@ class SeaofBTCapp(tk.Tk):
         container.pack(side="top", fill="both", expand = True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
+
+        # just some options in the menubar
+        menubar = tk.Menu(container)
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Save settings", command=lambda: popupmsg("Not supported just yet!"))
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", command=quit)
+        # now place the menubar
+        menubar.add_cascade(label="File", menu=filemenu)
+
+        # new menu option
+        exchangeChoice = tk.Menu(menubar, tearoff=1)
+        exchangeChoice.add_command(label="Bitfinex",
+                                    command=lambda: changeExchange("Bitfinex", "bitfinex"))
+        exchangeChoice.add_command(label="Bitstamp",
+                                    command=lambda: changeExchange("Bitstamp", "bitstamp"))
+        exchangeChoice.add_command(label="Huobi",
+                                    command=lambda: changeExchange("Huobi", "huobi"))
+
+
+        tk.Tk.config(self, menu=menubar)
 
         # when have a bunch of windows, can insert window here
         # then go down to StartPage class and create a for loop to choose one
@@ -265,9 +328,14 @@ class BTCe_Page(tk.Frame):
 # adding more button and code affects PageOne function
 app = SeaofBTCapp()
 
+# make size of app, more than enouh for graph
+app.geometry("1280x720")
+
 #get the animation in before the mainloop
 # 100 milliseconds = 1 sec
 # need to make the text document with the sample data
-ani = animation.FuncAnimation(f, animate, interval=1000)
+ani = animation.FuncAnimation(f, animate, interval=10000)
 
 app.mainloop()
+
+# maybe check out matplotlib tutorial series
