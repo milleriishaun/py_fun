@@ -17,7 +17,7 @@ matplotlib.use("TkAgg")
 # get canvas for graph to sit on and navbar for forward/back/zoom
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 # make sure to draw figures
-from matplotlib.figure import Figure
+# from matplotlib.figure import Figure
 
 # import the animation from matplotlib
 import matplotlib.animation as animation
@@ -25,6 +25,7 @@ from matplotlib import style
 from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as mticker
+from mpl_finance import candlestick_ohlc
 
 # now we have to use these modules to manage the datasets/limiting data
 # tikc data has all the buys and sells,
@@ -38,7 +39,8 @@ import pandas as pd
 # number crunching
 import numpy as np
 
-
+darkColor = '#183A54'
+lightColor = '#00A3E0'
 
 SMALL_FONT = ("Verdana", 8)
 NORM_FONT = ("Verdana", 10)
@@ -48,9 +50,9 @@ LARGE_FONT = ("Verdana", 12)
 style.use("ggplot")
 
 # display of the graph is hard to configure
-f = Figure()
+f = plt.figure()
 # add a subplot to this figure
-a = f.add_subplot(111)
+# a = f.add_subplot(111)
 # add the plot point data (x[], y[])
 # a.plot([1,2,3,4,5,6,7,8], [5,6,1,3,8,9,3,5]) # not using this again
 # we want to clear the data, so it isn't just adding graphs up and taking RAM
@@ -80,6 +82,8 @@ EMAs = []
 # use the constant for the chart Load, default is True
 chartLoad = True
 
+# this is so that the data can include different panes, for late adjustments
+paneCount = 1
 
 def tutorial():
     # def leavemini(what):
@@ -423,7 +427,7 @@ def changeSampleSize(size, width):
 
 
 def changeExchange(toWhat, pn):
-    global echange
+    global exchange
     global datCounter
     global programName
 
@@ -469,37 +473,375 @@ def animate(i):
     # a.clear()
     # a.plot(r.json()['bpi'].keys(), r.json()['bpi'].values())
     
-    dataLink = "https://api.bitfinex.com/v1/trades/BTCUSD?limit_trades=2000"
-    data = urllib.request.urlopen(dataLink)
-    data = data.read().decode("utf-8")
-    data = json.loads(data)
-    # data = data["btc_usd"] is useless for us
+    # refresh rate, and counter
+    global refreshRate
+    global datCounter
 
-    data = pd.DataFrame(data)
+    # we need this data to animate tick data only when it is user's choice
+    # so only do it when data time frames are included
+    if chartLoad:
+        if paneCount == 1:
+            if dataPace == "tick":
+                try:
+                    if exchange == "Bitfinex":
 
-    # Buys
-    buys = data[(data["type"]=="buy")]# changed to match the api response bid is now buy
-    # datestamp
-    buys["datestamp"]= np.array(buys["timestamp"]).astype("datetime64[s]")
-    # throw it at matplotlib
-    buyDates = (buys["datestamp"]).tolist()
+                        # full grid size, then starting point of plot, then spans, only 1 row remaining
+                        # we can later say it's a 12x4... later we can customize
+                        a = plt.subplot2grid((6,4), (0,0), rowspan=5, colspan=4)
+                        # sharex means that the zoom will affect with the exact degree
+                        # always be aligned with first chart, even when moved around
+                        a2 = plt.subplot2grid((6,4), (5,0), rowspan=1, colspan=4, sharex = a)
+                        dataLink = "https://api.bitfinex.com/v1/trades/BTCUSD?limit_trades=2000"
+                        data = urllib.request.urlopen(dataLink)
+                        data = data.read().decode("utf-8")
+                        data = json.loads(data)
+                        # data = data["btc_usd"] is useless for us
 
-    sells = data[(data["type"]=="sell")] # changed to match the api response ask is now sell
-    sells["datestamp"]= np.array(sells["timestamp"]).astype("datetime64[s]")
-    sellDates = (sells["datestamp"]).tolist()
+                        data = pd.DataFrame(data)
 
-    # update the graph
-    a.clear()
-    a.plot_date(buyDates, buys["price"], "#00A3E0", label="buys")
-    a.plot_date(sellDates,sells["price"], "#183A54", label="sells")
+                        # numpy array converted to numpy's date time format
+                        data["datestamp"] = np.array(data["timestamp"]).astype("datetime64[s]")
+                        # because we can't pass a numpy array in, we use this tolist
+                        allDates = data["datestamp"].tolist()
 
-    # fix the legend to not cover the data
-    a.legend(bbox_to_anchor=(0, 1.02, 1, 1.02), loc=3,
-            ncol=2, borderaxespad=0)
+                        # Buys  
+                        buys = data[(data["type"]=="buy")]# changed to match the api response bid is now buy
+                        # datestamp
+                        # buys["datestamp"]= np.array(buys["timestamp"]).astype("datetime64[s]")
+                        # throw it at matplotlib
+                        buyDates = (buys["datestamp"]).tolist()
 
-    title = "Bitfinex BTC/USD Prices\nLast Price: " + str(data["price"][99])
-    a.set_title(title)
-    
+                        sells = data[(data["type"]=="sell")] # changed to match the api response ask is now sell
+                        # sells["datestamp"]= np.array(sells["timestamp"]).astype("datetime64[s]")
+                        sellDates = (sells["datestamp"]).tolist()
+
+                        # calculate the volume... which is from the JSON
+                        volume = data["amount"].apply(float).tolist()
+
+                        # update the graph
+                        a.clear()
+                        a.plot_date(buyDates, buys["price"], lightColor, label="buys")
+                        a.plot_date(sellDates,sells["price"], darkColor, label="sells")
+
+                        # for volume data, specify minimum point, the dat(volume), and the color
+                        a2.fill_between(allDates, 0, volume, facecolor = darkColor)
+
+                        # sets the maximum amount of marks... so if a lot of marks, don't let it run over itself
+                        a.xaxis.set_major_locator(mticker.MaxNLocator(5))
+                        # format how the date actually looks
+                        a.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M:%S"))
+
+                        # fix the axes labels
+                        plt.setp(a.get_xticklabels(), visible = False)
+
+                        # fix the legend to not cover the data
+                        a.legend(bbox_to_anchor=(0, 1.02, 1, 1.02), loc=3,
+                                ncol=2, borderaxespad=0)
+
+                        title = "Bitfinex BTC/USD Prices\nLast Price: " + str(data["price"][99])
+                        a.set_title(title)
+                        priceData = data['price'].apply(float).tolist()
+
+
+                    if exchange == "Bitstamp":
+                        
+                        # full grid size, then starting point of plot, then spans, only 1 row remaining
+                        # we can later say it's a 12x4... later we can customize
+                        a = plt.subplot2grid((6,4), (0,0), rowspan=5, colspan=4)
+                        # sharex means that the zoom will affect with the exact degree
+                        # always be aligned with first chart, even when moved around
+                        a2 = plt.subplot2grid((6,4), (5,0), rowspan=1, colspan=4, sharex = a)
+                        dataLink = "https://www.bitstamp.net/api/transactions/"
+                        data = urllib.request.urlopen(dataLink)
+                        data = data.read().decode("utf-8")
+                        data = json.loads(data)
+                        # data = data["btc_usd"] is useless for us
+
+                        data = pd.DataFrame(data)
+
+                        # numpy array converted to numpy's date time format
+                        # they use date rather than timestamp
+                        data["datestamp"] = np.array(data["date"].apply(int)).astype("datetime64[s]")
+
+                        # have to add datestamps, rather than allDates
+                        datastamps = data["datestamp"].tolist()
+
+                        # because we can't pass a numpy array in, we use this tolist
+                        # allDates = data["datestamp"].tolist()
+                        '''
+                        # Buys  
+                        buys = data[(data["type"]=="buy")]# changed to match the api response bid is now buy
+                        # datestamp
+                        # buys["datestamp"]= np.array(buys["timestamp"]).astype("datetime64[s]")
+                        # throw it at matplotlib
+                        buyDates = (buys["datestamp"]).tolist()
+
+                        sells = data[(data["type"]=="sell")] # changed to match the api response ask is now sell
+                        # sells["datestamp"]= np.array(sells["timestamp"]).astype("datetime64[s]")
+                        sellDates = (sells["datestamp"]).tolist()
+                        '''
+                        # calculate the volume... which is from the JSON
+                        # bitstamp doesn't differentiate the buys versus the sells
+                        # change this to get the dat in the list format, because
+                        # the data from Bitstamp has different formatting
+                        volume = data["amount"].apply(float).tolist()
+
+                        # update the graph
+                        a.clear()
+                        a.plot_date(datastamps, data["price"], lightColor)
+                        # a.plot_date(sellDates,sells["price"], darkColor, label="sells")
+
+                        # for volume data, specify minimum point, the dat(volume), and the color
+                        a2.fill_between(datastamps, 0, volume, facecolor = darkColor)
+
+                        # sets the maximum amount of marks... so if a lot of marks, don't let it run over itself
+                        a.xaxis.set_major_locator(mticker.MaxNLocator(5))
+                        # format how the date actually looks
+                        a.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M:%S"))
+
+                        plt.setp(a.get_xticklabels(), visible = False)
+
+
+                        # fix the legend to not cover the data
+                        a.legend(bbox_to_anchor=(0, 1.02, 1, 1.02), loc=3,
+                                ncol=2, borderaxespad=0)
+                        # use 0 for most recent pricedelivered
+                        title = "Bitstamp BTC/USD Prices\nLast Price: " + str(data["price"][0])
+                        a.set_title(title)
+                        priceData = data['price'].apply(float).tolist()
+
+                    if exchange == "Huobi":
+                        try:
+                            # full grid size, then starting point of plot, then spans, only 1 row remaining
+                            # we can later say it's a 12x4... later we can customize
+                            a = plt.subplot2grid((6,4), (0,0), rowspan=6, colspan=4)
+                            # sharex means that the zoom will affect with the exact degree
+                            # always be aligned with first chart, even when moved around
+                            #
+                            # took this out because it didn't work
+                            # dataLink = ('http://seaofbtc.com/api/basic/price?key=1&tf=1d&exchange='+programName)
+                            data = urllib.request.urlopen('http://seaofbtc.com/api/basic/price?key=1&tf=1d&exchange='+programName).read()
+                            # data = data.decode() # this decoding is also unnecssary for Huobi
+                            # but we do need o search and replace
+                            data = data.decode()
+                            data = json.loads(data)
+                            # data = data["btc_usd"] is useless for us
+                            #dont' need pandas to interpret this graphs since 1 axis
+                            # data = pd.DataFrame(data)
+
+                            # have to add datestamps, rather than allDates
+                            # datastamps = data["datestamp"].tolist()
+                            # numpy array converted to numpy's date time format
+                            dateStamp = np.array(data[0]).astype("datetime64[s]")
+                            # because we can't pass a numpy array in, we use this tolist
+                            dateStamp = dateStamp.tolist()
+
+                            # call on pandas for the dataframe
+                            df = pd.DataFrame({'Datetime':dateStamp})
+
+                            # assign the price/vol/symbol column
+                            df['Price'] = data[1]
+                            df['Volume'] = data[2]
+                            df['Symbol'] = "BTC/USD"
+
+                            # plot these dates by conversion to MPL
+                            df['MPLDate'] = df['Datetime'].apply(lambda date: mdates.date2num(date.to_pydatetime()))
+
+                            # Setting the index makes it easier to work in pandas
+                            df = df.set_index("Datetime")
+
+                            lastPrice = df["Price"][-1]
+
+                            # This is our x and y
+                            a.plot_date(df['MPLDate'][-4500:], df['Price'][-4500:], lightColor, label="price")
+
+                            # sets the maximum amount of marks... so if a lot of marks, don't let it run over itself
+                            a.xaxis.set_major_locator(mticker.MaxNLocator(5))
+                            # format how the date actually looks
+                            a.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M:%S"))
+
+                            # fix the axes labels
+                            plt.setp(a.get_xticklabels(), visible = False)
+
+                            title = "Huobi Tick Data\nLast Price: " + str(lastPrice)
+                            a.set_title(title)
+                            priceData = df['price'].apply(float).tolist()
+
+                        except Exception as e:
+                            print("Failed because of: ", e)
+                
+                except:
+                    datCounter = 9000
+                
+# this is now NON-tick Graphing
+            else:
+                # this is so that we don't regenerate data/redraw graph
+                if datCounter > 12: # 12 seconds
+                    try:
+                        if exchange == "Huobi":
+                            # basically setting up the subplots, but there is no volume with Huobi so different
+                            if topIndicator != "none":
+                                a = plt.subplot2grid((6,4), (1,0), rowspan=5, colspan=4)
+                                a2 = plt.subplot2grid((6,4), (0,0), rowspan=1, colspan=4, sharex=a)
+                            else:
+                                a = plt.subplot2grid((6,4), (0,0), rowspan=6, colspan=4)
+                        
+                        else:
+                            if topIndicator != "none" and bottomIndicator != "none":
+                                # Main graph
+                                a = plt.subplot2grid((6,4), (1,0), rowspan=3, colspan=4)
+                                # Volume graph
+                                a2 = plt.subplot2grid((6,4), (4,0), rowspan=1, colspan=4, sharex=a)
+                                # Bottom Indicator
+                                a3 = plt.subplot2grid((6,4), (5,0), rowspan=1, colspan=4, sharex=a)
+                                # Top Indicator
+                                a0 = plt.subplot2grid((6,4), (0,0), rowspan=1, colspan=4, sharex=a)
+
+                            elif topIndicator != "none":
+                                # defactor, we don't have a bottom indicator
+                                # Main graph
+                                a = plt.subplot2grid((6,4), (1,0), rowspan=4, colspan=4)
+                                # Volume graph
+                                a2 = plt.subplot2grid((6,4), (5,0), rowspan=1, colspan=4, sharex=a)
+                                # Top Indicator
+                                a0 = plt.subplot2grid((6,4), (0,0), rowspan=1, colspan=4, sharex=a)
+
+                            elif bottomIndicator != "none":
+                                # defactor, we don't have a bottom indicator
+                                # Main graph
+                                a = plt.subplot2grid((6,4), (0,0), rowspan=4, colspan=4)
+                                # Volume graph
+                                a2 = plt.subplot2grid((6,4), (4,0), rowspan=1, colspan=4, sharex=a)
+                                # Bottom Indicator
+                                a3 = plt.subplot2grid((6,4), (5,0), rowspan=1, colspan=4, sharex=a)
+
+                            else:
+                                # Main graph
+                                a = plt.subplot2grid((6,4), (0,0), rowspan=5, colspan=4)
+                                # Volume graph
+                                a2 = plt.subplot2grid((6,4), (5,0), rowspan=1, colspan=4, sharex=a)
+
+                        print('http://seaofbtc.com/api/basic/price?key=1&tf='+dataPace+'&exchange='+programName)
+                        # normalize the data
+                        data = urllib.request.urlopen('http://seaofbtc.com/api/basic/price?key=1&tf='+dataPace+'&exchange='+programName).read()
+                        data = data.decode
+                        data = json.loads(data)
+
+                        dateStamp = np.array(data[0]).astype("datetime64[s]")
+                        dateStamp = dateStamp.tolist()
+
+                        df = pd.DataFrame({'Datetime':dateStamp})
+
+                        # assign the price/vol/symbol column
+                        df['Price'] = data[1]
+                        df['Volume'] = data[2]
+                        df['Symbol'] = "BTC/USD"
+                        # plot these dates by conversion to MPL
+                        df['MPLDate'] = df['Datetime'].apply(lambda date: mdates.date2num(date.to_pydatetime()))
+                        df = df.set_index('Datetime')
+
+                        # we'll need OHLC candlestick info here
+                        OHLC = df["Price"].resample(reSampleSize, how="ohlc")
+                        OHLC = OHLC.dropna()
+
+                        volumeData = df['Volume'].resample(reSampleSize, how={'volume':'sum'})
+
+                        OHLC["dateCopy"] = OHLC.index
+                        OHLC["MPLDates"] = OHLC["dateCopy"].apply(lambda date: mdates.date2num(date.to_pydatetime()))
+
+                        # this is after use
+                        del OHLC["dateCopy"]
+
+                        volumeData["dateCopy"] = volumeData.index
+                        volumeData["MPLDates"] = volumeData["dateCopy"].apply(lambda date: mdates.date2num(date.to_pydatetime()))
+
+                        # this is after use
+                        del volumeData["dateCopy"]
+
+                        priceData = OHLC['close'].apply(float).tolist()
+
+
+                        a.clear()
+                        if middleIndicator != "none":
+                            for eachMA in middleIndicator:
+                                # ewma = pd.stats.moments.ewma
+                                if eachMA[0] == "sma":
+                                    sma = pd.rolling_mean(OHLC["close"], eachMA[1])
+                                    label = str(eachMA[1])+" SMA"
+                                    a.plot(OHLC["MPLDates"], sma, label=label)
+
+                                if eachMA[0] == "ema":
+                                    ewma = pd.stats.moments.ewma
+                                    label = str(eachMA[1])+" EMA"
+                                    a.plot(OHLC["MPLDates"], ewma(OHLC["close"], eachMA[1]), label=label)
+
+                            a.legend(loc=0)
+
+
+
+
+                        if topIndicator[0] == "rsi":
+                            rsiIndicator(priceData, "top")
+                        elif topIndicator == "macd":
+                            try:
+                                computeMACD(priceData, location="top")
+                            except Exception as e:
+                                print(str(e))
+
+                        if bottomIndicator[0] == "rsi":
+                            rsiIndicator(priceData, "bottom")
+                        elif bottomIndicator == "macd":
+                            try:
+                                computeMACD(priceData, location="bottom")
+                            except Exception as e:
+                                print(str(e))
+                        
+
+
+                        csticks = candlestick_ohlc(a, OHLC[["MPLDates", "open","high", "low","close"]].values, width=candleWidth, colorup=lightColor, colordown=darkColor)
+                        a.set_ylabel("Price")
+                        if exchange != "Huobi":
+                            a2.fill_between(volumeData["MPLDates"], 0, volumeData['Volume'], facecolor=darkColor)
+                            a2.set_ylabel("Volume")
+                        
+                        a.xaxis.set_major_locator(mticker.MaxNLocator(3))
+                        a.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M"))
+
+                        plt.setp(a.get_xticklabels(), visible = False)
+
+                        if topIndicator != "none":
+                            plt.setp(a0.get_xticklabels(), visible = False)
+
+                        if bottomIndicator != "none":
+                            plt.setp(a2.get_xticklabels(), visible = False)
+
+                        # get the last element in the list
+                        x = (len(OHLC['close']))-1
+
+                        if dataPace == "1d":
+                            title = exchange+" 1 Day Data with "+reSampleSize+" Bars\nLast Price: "+str(OHLC['close'][x])
+                        if dataPace == "3d":
+                            title = exchange+" 3 Day Data with "+reSampleSize+" Bars\nLast Price: "+str(OHLC['close'][x])
+                        if dataPace == "7d":
+                            title = exchange+" 7 Day Data with "+reSampleSize+" Bars\nLast Price: "+str(OHLC['close'][x])
+
+                        if topIndicator != "none":
+                            a0.set_title(title)
+                        else:
+                            a.set_title(title)
+                        
+                        # tell us a new graph is made
+                        print("New Graph!")
+                        datCounter = 0
+
+                    except Exception as e:
+                        print('failed in the animate: ', str(e))
+                        # if fails, can attempt to go back to the start
+                        datCounter = 9000
+
+                else:
+                    # only reupdaet once >12
+                    datCounter += 1
 '''
 #old animate using info from sampleData file
     pullData = open("sampleData.txt", "r").read()
