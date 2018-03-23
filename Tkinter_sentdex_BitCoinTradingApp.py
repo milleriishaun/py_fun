@@ -477,6 +477,109 @@ def animate(i):
     global refreshRate
     global datCounter
 
+
+    # just have defaults... slow/fast are the periods... slow reacting and fast reacting
+    def computeMACD(x, slow=26, fast=12, location="bottom"):
+        values = {"key":1, "prices":x}
+
+        url = "http://seaofbtc.com/api/indicator/macd" # get API
+        data = urllib.parse.urlencode(values) # encode the values
+        data = data.encode("utf-8")
+        req = urllib.request.Request(url, data) # request the url with the data
+        resp = urllib.request.urlopen(req) # open the request
+        respData = resp.read() # read the data
+
+        newData = str(respData).replace("b", "").replace("[", "").replace("]", "").replace("'", "")
+
+        # far from industry standard here
+        split = newData.split("::")
+
+        macd = split[0]
+        ema9 = split[1]
+        hist = split[2]
+        
+        # convert this into a list
+        macd = macd.split(", ")
+        ema9 = ema9.split(", ")
+        hist = hist.split(", ")
+
+
+        # convert from string into a n integer
+        macd = [float(i) for i in macd]
+        ema9 = [float(i) for i in ema9]
+        hist = [float(i) for i in hist]
+
+        # now we want to plot the data
+        # it looks cooler to have a filled in histogram
+        # use the dates to plot
+        if location == "top":
+            try:
+                a0.plot(OHLC["MPLDates"][fast:], macd[fast:], color = darkColor, lw=2)
+                a0.plot(OHLC["MPLDates"][fast:], ema9[fast:], color = lightColor, lw=1)
+                a0.fill_between(OHLC["MPLDates"][fast:], hist[fast:], 0, alpha=0.5, facecolor=darkColor, edgecolor=darkColor)
+                label = "MACD"
+                a0.set_ylabel(label)
+            except Exception as e:
+                print("Error in computeMACD: ", str(e))
+                topIndicator = "none"
+
+        if location == "bottom":
+            try:
+                a3.plot(OHLC["MPLDates"][fast:], macd[fast:], color = darkColor, lw=2)
+                a3.plot(OHLC["MPLDates"][fast:], ema9[fast:], color = lightColor, lw=1)
+                a3.fill_between(OHLC["MPLDates"][fast:], hist[fast:], 0, alpha=0.5, facecolor=darkColor, edgecolor=darkColor)
+                label = "MACD"
+                a3.set_ylabel(label)
+            except Exception as e:
+                print("Error in computeMACD: ", str(e))
+                bottomIndicator = "none"
+
+
+
+
+
+    #CMBTC API for RSI indicator
+    def rsiIndicator(priceData, location="top"):
+        if location == "top":
+            # dictionary of values
+            values = {"key":1, "prices":priceData, "periods":topIndicator[1]}
+        if location == "bottom":
+            # dictionary of values
+            values = {"key":1, "prices":priceData, "periods":bottomIndicator[1]}
+
+        url = "http://seaofbtc.com/api/indicator/rsi"
+
+        data = urllib.parse.urlencode(values)
+        data = data.encode("utf-8")
+
+        req = urllib.request.Request(url, data)
+        resp = urllib.request.urlopen(req)
+
+        respData = resp.read()
+
+        # newData = respData.decode() # this wasn't working(ideally would use the JSON module...)
+        # problem was that it was not a true JSON format... regarding the API itself
+        # bad change below because messy, coverts from bytecode to a python list
+        newData = str(respData).replace("b", "").replace("[", "").replace("]", "").replace("'", "")
+        priceList = newData.split(', ')
+        rsiData = [float(i) for i in priceList]
+
+        # nwo actually put the RSI info up
+        if location == "top":
+            a0.plot_date(OHLC['MPLDates'], rsiData, lightColor, label="RSI")
+            datLabel = "RSI("+str(topIndicator[1])+")"
+            a0.set_ylabel(datLabel)
+
+        if location == "bottom":
+            a3.plot_date(OHLC['MPLDates'], rsiData, lightColor, label="RSI")
+            datLabel = "RSI("+str(bottomIndicator[1])+")"
+            a3.set_ylabel(datLabel)
+
+
+
+
+
+
     # we need this data to animate tick data only when it is user's choice
     # so only do it when data time frames are included
     if chartLoad:
@@ -952,10 +1055,10 @@ class SeaofBTCapp(tk.Tk):
         bottomI = tk.Menu(menubar, tearoff=1)
         bottomI.add_command(label = "None",
                             command=lambda: addBottomIndicator('none'))
-        bottomI.add_command(label = "SMA",
-                            command=lambda: addBottomIndicator('sma'))
-        bottomI.add_command(label = "EMA",
-                            command=lambda: addBottomIndicator('ema'))
+        bottomI.add_command(label = "RSI",
+                            command=lambda: addBottomIndicator('rsi'))
+        bottomI.add_command(label = "MACD",
+                            command=lambda: addBottomIndicator('macd'))
         menubar.add_cascade(label="Bottom Indicator", menu=bottomI)
 
 
