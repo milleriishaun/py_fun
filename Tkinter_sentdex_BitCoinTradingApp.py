@@ -25,7 +25,7 @@ from matplotlib import style
 from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as mticker
-from mpl_finance import candlestick_ohlc
+from matplotlib.finance import candlestick_ohlc
 
 # now we have to use these modules to manage the datasets/limiting data
 # tikc data has all the buys and sells,
@@ -532,13 +532,13 @@ def animate(i):
                         a.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M:%S"))
 
                         # fix the axes labels
-                        plt.setp(a.get_xticklabels(), visible = False)
+                        plt.setp(a.get_xticklabels(), visible=False)
 
                         # fix the legend to not cover the data
                         a.legend(bbox_to_anchor=(0, 1.02, 1, 1.02), loc=3,
                                 ncol=2, borderaxespad=0)
 
-                        title = "Bitfinex BTC/USD Prices\nLast Price: " + str(data["price"][99])
+                        title = "Bitfinex BTC/USD Prices\nLast Price: " + str(data["price"][0])
                         a.set_title(title)
                         priceData = data['price'].apply(float).tolist()
 
@@ -601,14 +601,11 @@ def animate(i):
 
                         plt.setp(a.get_xticklabels(), visible = False)
 
-
-                        # fix the legend to not cover the data
-                        a.legend(bbox_to_anchor=(0, 1.02, 1, 1.02), loc=3,
-                                ncol=2, borderaxespad=0)
                         # use 0 for most recent pricedelivered
                         title = "Bitstamp BTC/USD Prices\nLast Price: " + str(data["price"][0])
                         a.set_title(title)
                         priceData = data['price'].apply(float).tolist()
+                        
 
                     if exchange == "Huobi":
                         try:
@@ -645,7 +642,7 @@ def animate(i):
                             df['Symbol'] = "BTC/USD"
 
                             # plot these dates by conversion to MPL
-                            df['MPLDate'] = df['Datetime'].apply(lambda date: mdates.date2num(date.to_pydatetime()))
+                            df['MPLDate'] = df['Datetime'] #.apply(lambda date: mdates.date2num(date.to_pydatetime()))
 
                             # Setting the index makes it easier to work in pandas
                             df = df.set_index("Datetime")
@@ -660,12 +657,9 @@ def animate(i):
                             # format how the date actually looks
                             a.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M:%S"))
 
-                            # fix the axes labels
-                            plt.setp(a.get_xticklabels(), visible = False)
-
                             title = "Huobi Tick Data\nLast Price: " + str(lastPrice)
                             a.set_title(title)
-                            priceData = df['price'].apply(float).tolist()
+                            priceData = df['Price'].apply(float).tolist()
 
                         except Exception as e:
                             print("Failed because of: ", e)
@@ -682,7 +676,7 @@ def animate(i):
                             # basically setting up the subplots, but there is no volume with Huobi so different
                             if topIndicator != "none":
                                 a = plt.subplot2grid((6,4), (1,0), rowspan=5, colspan=4)
-                                a2 = plt.subplot2grid((6,4), (0,0), rowspan=1, colspan=4, sharex=a)
+                                a0 = plt.subplot2grid((6,4), (0,0), rowspan=1, colspan=4, sharex=a)
                             else:
                                 a = plt.subplot2grid((6,4), (0,0), rowspan=6, colspan=4)
                         
@@ -724,7 +718,7 @@ def animate(i):
                         print('http://seaofbtc.com/api/basic/price?key=1&tf='+dataPace+'&exchange='+programName)
                         # normalize the data
                         data = urllib.request.urlopen('http://seaofbtc.com/api/basic/price?key=1&tf='+dataPace+'&exchange='+programName).read()
-                        data = data.decode
+                        data = data.decode()
                         data = json.loads(data)
 
                         dateStamp = np.array(data[0]).astype("datetime64[s]")
@@ -737,30 +731,30 @@ def animate(i):
                         df['Volume'] = data[2]
                         df['Symbol'] = "BTC/USD"
                         # plot these dates by conversion to MPL
-                        df['MPLDate'] = df['Datetime'].apply(lambda date: mdates.date2num(date.to_pydatetime()))
+                        df['MPLDate'] = df['Datetime'] #.apply(lambda date: mdates.date2num(date.to_pydatetime()))
                         df = df.set_index('Datetime')
 
                         # we'll need OHLC candlestick info here
-                        OHLC = df["Price"].resample(reSampleSize, how="ohlc")
+                        OHLC = df['Price'].resample(reSampleSize, how="ohlc")
                         OHLC = OHLC.dropna()
 
                         volumeData = df['Volume'].resample(reSampleSize, how={'volume':'sum'})
 
                         OHLC["dateCopy"] = OHLC.index
-                        OHLC["MPLDates"] = OHLC["dateCopy"].apply(lambda date: mdates.date2num(date.to_pydatetime()))
+                        OHLC["MPLDates"] = OHLC["dateCopy"] #.apply(lambda date: mdates.date2num(date.to_pydatetime()))
 
                         # this is after use
                         del OHLC["dateCopy"]
 
                         volumeData["dateCopy"] = volumeData.index
-                        volumeData["MPLDates"] = volumeData["dateCopy"].apply(lambda date: mdates.date2num(date.to_pydatetime()))
+                        volumeData["MPLDates"] = volumeData["dateCopy"] #.apply(lambda date: mdates.date2num(date.to_pydatetime()))
 
                         # this is after use
                         del volumeData["dateCopy"]
 
                         priceData = OHLC['close'].apply(float).tolist()
 
-
+                        # now let's plot it
                         a.clear()
                         if middleIndicator != "none":
                             for eachMA in middleIndicator:
@@ -779,7 +773,7 @@ def animate(i):
 
 
 
-
+                        # relative  strength index
                         if topIndicator[0] == "rsi":
                             rsiIndicator(priceData, "top")
                         elif topIndicator == "macd":
@@ -797,17 +791,21 @@ def animate(i):
                                 print(str(e))
                         
 
-
+                        # now generate the graph, now that we have to rules
+                        # subplot a
+                        # list within DataFrame
                         csticks = candlestick_ohlc(a, OHLC[["MPLDates", "open","high", "low","close"]].values, width=candleWidth, colorup=lightColor, colordown=darkColor)
-                        a.set_ylabel("Price")
+                        a.set_ylabel("price")
                         if exchange != "Huobi":
-                            a2.fill_between(volumeData["MPLDates"], 0, volumeData['Volume'], facecolor=darkColor)
-                            a2.set_ylabel("Volume")
+                            a2.fill_between(volumeData["MPLDates"], 0, volumeData['volume'], facecolor=darkColor)
+                            a2.set_ylabel("volume")
                         
                         a.xaxis.set_major_locator(mticker.MaxNLocator(3))
+                        # dont need sconds because not tick data, minute is even pushing it
                         a.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d %H:%M"))
 
-                        plt.setp(a.get_xticklabels(), visible = False)
+                        if exchange != "Huobi":
+                            plt.setp(a.get_xticklabels(), visible = False)
 
                         if topIndicator != "none":
                             plt.setp(a0.get_xticklabels(), visible = False)
@@ -840,7 +838,7 @@ def animate(i):
                         datCounter = 9000
 
                 else:
-                    # only reupdaet once >12
+                    # only reupdate once >12
                     datCounter += 1
 '''
 #old animate using info from sampleData file
@@ -1134,7 +1132,7 @@ app.geometry("1280x720")
 #get the animation in before the mainloop
 # 100 milliseconds = 1 sec
 # need to make the text document with the sample data
-ani = animation.FuncAnimation(f, animate, interval=10000)
+ani = animation.FuncAnimation(f, animate, interval=5000)
 
 app.mainloop()
 
