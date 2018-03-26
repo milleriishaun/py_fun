@@ -1,3 +1,5 @@
+
+'''
 # This is how you create a table in SQLite3
 
 
@@ -94,7 +96,7 @@ except sqlite3.OperationalError:
     print("Table Couldn't Be Updated")
 
 printDB()
-
+'''
 
 
 
@@ -115,7 +117,7 @@ db_conn.rollback()
 
 
 
-
+'''
 # You can add new Columns
 # for employees, we can put an image in...
 # image with a default value of null
@@ -177,3 +179,18 @@ printDB()
 # Always want to close the DB after usage.
 db_conn.close()
 print("Database Closed")
+'''
+
+
+
+
+# real tutorials on SQLite3(from 2013)
+# embedded relational database
+# database is part of the code, not outside resource
+# runs on any machine w/any software... good for Android Apps
+# complicated queries might make it fail, but there are a lot of extensions
+# they can be used in any language
+
+import sqlite3
+import sys
+
