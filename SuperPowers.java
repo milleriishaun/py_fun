@@ -1,7 +1,12 @@
 import java.util.Arrays;
 import java.util.Comparator;
 
-
+/* shortcut statements for not inserting raw data
+// 1. db wit/superheros+powers
+// 2. get list sorted in order
+// 3. match general powers with certain heroes
+// 4. more specific info about certain superheros
+*/
 public class SuperPowers {
 	
 	static String[][] superPowerArray = {{"Power augmentation", "Ability to enhance or weaken the powers of others"}, 
