@@ -174,6 +174,7 @@ public class SuperPowers {
             }
         });
 		
+		// quick and dirty way of solving this generate powe lists
 		SuperPowers superPowerTools = new SuperPowers();
 		
 		// Generate insert statements for general_power table
@@ -185,6 +186,7 @@ public class SuperPowers {
 		superPowerTools.generateInsertStatements(superhumanArray, "identity", "secret_identity", "character");
 		
 		// Generate insert statements for power table
+		// important that these values are integers/not integers
 		
 		superPowerTools.generateInsertStatements(specificPowerArray, "power", "power_type_id", true, "power_desc", false);
 		

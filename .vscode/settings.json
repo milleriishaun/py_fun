@@ -6,9 +6,12 @@
         "-p",
         "test*.py"
     ],
-    "python.unitTest.unittestEnabled": true,
+    "python.unitTest.unittestEnabled": false,
     "debug.allowBreakpointsEverywhere": true,
     "python.linting.pylintEnabled": true,
-    // "python.linting.enabled": true,
-    "python.linting.lintOnSave": false
+    "python.linting.enabled": true,
+    "python.linting.lintOnSave": false,
+    "python.unitTest.promptToConfigure": false,
+    "python.unitTest.pyTestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false
 }
