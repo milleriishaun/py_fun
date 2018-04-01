@@ -195,4 +195,5 @@ print("Database Closed")
 import sqlite3
 import sys
 
-print("car")
+# more edits of the database sqlite3
+print("Database manipulation within sqlite3")
