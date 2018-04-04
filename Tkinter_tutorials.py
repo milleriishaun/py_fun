@@ -1069,3 +1069,495 @@ class App():
 
 a = App()
 '''
+
+
+
+'''
+# review of Tkinter(Derek Banas) Part 1
+from tkinter import *
+from tkinter import ttk
+
+def get_sum(event):
+    num1 = int(num1Entry.get())
+    num2 = int(num2Entry.get())
+
+    sum = num1 + num2
+
+    sumEntry.delete(0, "end")
+
+    sumEntry.insert(0, sum)
+
+
+root = Tk()
+
+num1Entry = Entry(root)
+num1Entry.pack(side=LEFT)
+
+Label(root, text="+").pack(side=LEFT)
+
+num2Entry = Entry(root)
+num2Entry.pack(side=LEFT)
+
+equalButton = Button(root, text="=")
+equalButton.bind("<Button-1>", get_sum)
+equalButton.pack(side=LEFT)
+
+sumEntry = Entry(root)
+sumEntry.pack(side=LEFT)
+
+root.mainloop()
+'''
+
+# review of Tkinter(Derek Banas) Part 2.1
+# Menubars, Tk Variabes, Message Boxes, Styling Widgets
+
+
+'''
+from tkinter import *
+from tkinter import messagebox
+
+def get_data(event=None):
+    print("String: ", strVar.get())
+    print("Integer: ", intVar.get())
+    print("Double: ", dblVar.get())
+    print("Boolean: ", boolVar.get())
+
+def bind_button(event=None):
+    if boolVar.get():
+        getDataButton.unbind("<Button-1>")
+    else:
+        getDataButton.bind("<Button-1>", get_data)
+
+root = Tk()
+
+strVar = StringVar()
+intVar = IntVar()
+dblVar = DoubleVar()
+boolVar = BooleanVar()
+
+strVar.set("Enter String")
+intVar.set("Enter Integer")
+dblVar.set("Enter Double")
+boolVar.set(True)
+
+strEntry = Entry(root, textvariable=strVar)
+strEntry.pack(side=LEFT)
+
+intEntry = Entry(root, textvariable=intVar)
+intEntry.pack(side=LEFT)
+
+dblEntry = Entry(root, textvariable=dblVar)
+dblEntry.pack(side=LEFT)
+
+theCheckBut = Checkbutton(root, text="Switch", variable=boolVar)
+theCheckBut.bind("<Button-1>", bind_button)
+theCheckBut.pack(side=LEFT)
+
+getDataButton = Button(root, text="Get Data")
+getDataButton.bind("<Button-1>", get_data)
+getDataButton.pack(side=LEFT)
+
+root.mainloop()
+'''
+
+# review of Tkinter(Derek Banas) Part 2.2
+# working on styling
+'''
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+
+def open_msg_box():
+    messagebox.showwarning(
+        "Event Triggered",
+        "Button Clicked"
+    )
+
+root = Tk()
+
+root.geometry("400x400+300+300")
+
+root.resizable(width=False, height=False)
+
+frame = Frame(root)
+
+style = ttk.Style()
+
+style.configure("TButton",
+                fg="midnight blue",
+                font="Times 20 bold italic",
+                padding=20)
+
+print(ttk.Style().theme_names())
+
+print(style.lookup("TButton", "font"))
+print(style.lookup("TButton", "fg"))
+print(style.lookup("TButton", "padding"))
+
+ttk.Style().theme_use('clam')
+
+
+theButton = ttk.Button(frame,
+                        text="Important Button",
+                        command=open_msg_box)
+
+
+theButton['state'] = 'disabled'
+theButton['state'] = 'normal'
+
+theButton.pack()
+
+frame.pack()
+
+root.mainloop()
+'''
+
+
+# review of Tkinter(Derek Banas) Part 2.3
+# working on menubars
+'''
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+
+def quit_app():
+    root.quit()
+
+def show_about(event=None):
+    messagebox.showwarning(
+                            "About",
+                            "This awesome program was made in 2018"
+    )
+
+
+root = Tk()
+
+the_menu = Menu(root)
+
+# ------ File Menu -----
+file_menu = Menu(the_menu, tearoff=0)
+
+file_menu.add_command(label="Open")
+
+file_menu.add_command(label="Save")
+
+file_menu.add_separator()
+
+file_menu.add_command(label="Quit", command=quit_app)
+
+the_menu.add_cascade(label="File", menu=file_menu)
+
+# ------ Font Menu -----
+text_font = StringVar()
+text_font.set("Times")
+
+def change_font(event=None):
+    print("Font Picked: ", text_font.get())
+
+font_menu = Menu(the_menu, tearoff=0)
+
+font_menu.add_radiobutton(label="Times",
+                        variable=text_font,
+                        command=change_font)
+
+font_menu.add_radiobutton(label="Courier",
+                        variable=text_font,
+                        command=change_font)
+
+font_menu.add_radiobutton(label="Ariel",
+                        variable=text_font,
+                        command=change_font)
+
+# ------ View Menu -----
+
+view_menu = Menu(the_menu, tearoff=0)
+
+# store this in a TK variable(show or not show line numbers)
+line_numbers = IntVar()
+# set by default to "checked"... er true = 1
+line_numbers.set(1)
+
+view_menu.add_checkbutton(label="Line Numbers",
+                        variable=line_numbers)
+
+# tie this to the font_menu... but need to make it first
+view_menu.add_cascade(label="Fonts", menu=font_menu)
+
+the_menu.add_cascade(label="View", menu=view_menu)
+
+# ------ Help Menu -----
+
+help_menu = Menu(the_menu, tearoff=0)
+
+help_menu.add_command(label="About",
+                    accelerator="ctrl-A", # little notification of shortcut
+                    command=show_about)
+
+the_menu.add_cascade(label="Help", menu=help_menu)
+
+root.bind("<Control-A>", show_about)
+root.bind("<Control-a>", show_about)
+
+root.config(menu=the_menu) # this is to show the menu updates
+
+root.mainloop()
+'''
+
+
+# Calculator App in Python using TkInter
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+
+# Number Key Functions
+def sevenIn(event=None):
+    greenScreen.insert("end", 7)
+
+def eightIn(event=None):
+    greenScreen.insert("end", 8)
+
+def nineIn(event=None):
+    greenScreen.insert("end", 9)
+
+def fourIn(event=None):
+    greenScreen.insert("end", 4)
+
+def fiveIn(event=None):
+    greenScreen.insert("end", 5)
+
+def sixIn(event=None):
+    greenScreen.insert("end", 6)
+
+def oneIn(event=None):
+    greenScreen.insert("end", 1)
+
+def twoIn(event=None):
+    greenScreen.insert("end", 2)
+
+def threeIn(event=None):
+    greenScreen.insert("end", 3)
+
+def zeroIn(event=None):
+    greenScreen.insert("end", 0)
+
+# Operation Key Functions
+def get_division(event=None):
+    firstVal = greenScreen.get()
+    greenScreen.delete(0, "end")
+    operator1 = 1
+    return firstVal, operator1
+
+def get_multiplication(event=None):
+    firstVal = greenScreen.get()
+    greenScreen.delete(0, "end")
+    operator1 = 2
+    return firstVal, operator1
+
+def get_addition(event):
+    firstVal = int(greenScreen.get())
+    greenScreen.delete(0, "end")
+    operator1 = 3
+    # print(firstVal)
+    return firstVal, operator1
+
+def get_subtraction(event=None):
+    firstVal = greenScreen.get()
+    greenScreen.delete(0, "end")
+    operator1 = 4
+    return firstVal, operator1
+
+# Equivalence Button
+def get_equivalence(event, val1, op1):
+    val2 = greenScreen.get()
+    print(val1)
+    print(op1)
+    print(val2)
+    if op1 == 1:
+        result = val1 / val2
+        greenScreen.insert("end", result)
+    elif op1 == 2:
+        result = val1 * val2
+        greenScreen.insert("end", result)
+    elif op1 == 3:
+        result = val1 + val2
+        greenScreen.insert("end", result)
+    elif op1 == 4:
+        result = val1 - val2
+        greenScreen.insert("end", result)
+    else:
+        
+        # result=0
+        messagebox.showwarning("Syntax Error", "Choose operation first")
+
+    greenScreen.delete(0, "end")
+    # greenScreen.insert("end", result)
+
+def get_ac():
+    firstVal = 0
+    greenScreen.delete(0, "end")
+
+# First and Second Value identification and sub_evaluation
+def get_data(event):
+    print("...getting data")
+    
+
+root = Tk()
+
+root.geometry("400x400+300+300")
+
+root.resizable(width=False, height=False)
+
+frame = Frame(root)
+
+operator1 = IntVar()
+firstVal = IntVar()
+
+operator1.set(0)
+firstVal.set(0)
+
+# im confused when it comes to getting the button to connect
+# to the function... I can use commmand, textvariable, variable(for bool)
+# Green Screen
+greenScreen = ttk.Entry(frame, width=54, justify=RIGHT)
+greenScreen.grid(row=0, column=0, columnspan=4, padx=5, pady=4)
+
+
+# Number Keys
+sevenB = ttk.Button(frame, text="7", command=sevenIn)
+sevenB.grid(row=1, column=0, padx=5, pady=2)
+eightB = ttk.Button(frame, text="8", command=eightIn)
+eightB.grid(row=1, column=1, padx=5, pady=2)
+nineB = ttk.Button(frame, text="9", command=nineIn)
+nineB.grid(row=1, column=2, padx=5, pady=2)
+
+fourB = ttk.Button(frame, text="4", command=fourIn)
+fourB.grid(row=2, column=0, padx=5, pady=2)
+fiveB = ttk.Button(frame, text="5", command=fiveIn)
+fiveB.grid(row=2, column=1, padx=5, pady=2)
+sixB = ttk.Button(frame, text="6", command=sixIn)
+sixB.grid(row=2, column=2, padx=5, pady=2)
+
+oneB = ttk.Button(frame, text="4", command=oneIn)
+oneB.grid(row=3, column=0, padx=5, pady=2)
+twoB = ttk.Button(frame, text="5", command=twoIn)
+twoB.grid(row=3, column=1, padx=5, pady=2)
+threeB = ttk.Button(frame, text="6", command=threeIn)
+threeB.grid(row=3, column=2, padx=5, pady=2)
+
+zeroB = ttk.Button(frame, text="0", command=zeroIn)
+zeroB.grid(row=4, column=1, padx=5, pady=2)
+
+# Operations Keys
+divisionB = ttk.Button(frame, text="/", command=get_division)
+divisionB.grid(row=1, column=3, padx=5, pady=2)
+
+multiplicationB = ttk.Button(frame, text="*", command=get_multiplication)
+multiplicationB.grid(row=2, column=3, padx=5, pady=2)
+
+additionB = ttk.Button(frame, text="+")
+additionB.bind("<Button-1>", get_addition)
+additionB.grid(row=3, column=3, padx=5, pady=2)
+
+subtractionB = ttk.Button(frame, text="-", command=get_subtraction)
+subtractionB.grid(row=4, column=3, padx=5, pady=2)
+
+# Equivalence Key
+equivalenceB = ttk.Button(frame, text="=")
+equivalenceB.bind("<Button-1>", get_equivalence("<Button-1>", firstVal, operator1))
+equivalenceB.grid(row=4, column=2, padx=5, pady=2)
+
+# All Clear Key
+allClearB = ttk.Button(frame, text="AC", command=get_ac)
+allClearB.grid(row=4, column=0, padx=5, pady=2)
+
+
+
+frame.pack()
+
+root.mainloop()
+
+
+'''
+# review of Tkinter(Derek Banas) Part 1
+from tkinter import *
+from tkinter import ttk
+
+def get_sum(event):
+    num1 = int(num1Entry.get())
+    num2 = int(num2Entry.get())
+
+    sum = num1 + num2
+
+    sumEntry.delete(0, "end")
+
+    sumEntry.insert(0, sum)
+
+
+root = Tk()
+
+num1Entry = Entry(root)
+num1Entry.pack(side=LEFT)
+
+Label(root, text="+").pack(side=LEFT)
+
+num2Entry = Entry(root)
+num2Entry.pack(side=LEFT)
+
+equalButton = Button(root, text="=")
+equalButton.bind("<Button-1>", get_sum)
+equalButton.pack(side=LEFT)
+
+sumEntry = Entry(root)
+sumEntry.pack(side=LEFT)
+
+root.mainloop()
+'''
+
+
+'''
+from tkinter import *
+from tkinter import messagebox
+
+def get_data(event=None):
+    print("String: ", strVar.get())
+    print("Integer: ", intVar.get())
+    print("Double: ", dblVar.get())
+    print("Boolean: ", boolVar.get())
+
+def bind_button(event=None):
+    if boolVar.get():
+        getDataButton.unbind("<Button-1>")
+    else:
+        getDataButton.bind("<Button-1>", get_data)
+
+root = Tk()
+
+strVar = StringVar()
+intVar = IntVar()
+dblVar = DoubleVar()
+boolVar = BooleanVar()
+
+strVar.set("Enter String")
+intVar.set("Enter Integer")
+dblVar.set("Enter Double")
+boolVar.set(True)
+
+strEntry = Entry(root, textvariable=strVar)
+strEntry.pack(side=LEFT)
+
+intEntry = Entry(root, textvariable=intVar)
+intEntry.pack(side=LEFT)
+
+dblEntry = Entry(root, textvariable=dblVar)
+dblEntry.pack(side=LEFT)
+
+theCheckBut = Checkbutton(root, text="Switch", variable=boolVar)
+theCheckBut.bind("<Button-1>", bind_button)
+theCheckBut.pack(side=LEFT)
+
+getDataButton = Button(root, text="Get Data")
+getDataButton.bind("<Button-1>", get_data)
+getDataButton.pack(side=LEFT)
+
+root.mainloop()
+'''
