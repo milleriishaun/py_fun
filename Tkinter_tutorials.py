@@ -1342,133 +1342,188 @@ def zeroIn(event=None):
 
 # Operation Key Functions
 def get_division(event=None):
-    firstVal = greenScreen.get()
+    firstVal.set(int(greenScreen.get()))
+    print('first: ', val1.get())
+    store.set(int(val1.get()))
+    print('val1storage: ', val1storage.get())
+    print('screen: ', greenScreen.get())
     greenScreen.delete(0, "end")
-    operator1 = 1
-    return firstVal, operator1
+    print('screen: ', greenScreen.get())
+    op1.delete(0, "end")
+    print('+: ', op1.get())
+    op1.insert(0, 1)
+    print('+: ', op1.get())
+    print()
 
 def get_multiplication(event=None):
-    firstVal = greenScreen.get()
+    firstVal.set(int(greenScreen.get()))
+    print('first: ', val1.get())
+    store.set(int(val1.get()))
+    print('val1storage: ', val1storage.get())
+    print('screen: ', greenScreen.get())
     greenScreen.delete(0, "end")
-    operator1 = 2
-    return firstVal, operator1
+    print('screen: ', greenScreen.get())
+    op1.delete(0, "end")
+    print('+: ', op1.get())
+    op1.insert(0, 2)
+    print('+: ', op1.get())
+    print()
 
-def get_addition(event):
-    firstVal = int(greenScreen.get())
+def get_addition(event=None):
+    firstVal.set(int(greenScreen.get()))
+    print('first: ', val1.get())
+    store.set(int(val1.get()))
+    print('val1storage: ', val1storage.get())
+    print('screen: ', greenScreen.get())
     greenScreen.delete(0, "end")
-    operator1 = 3
-    # print(firstVal)
-    return firstVal, operator1
+    print('screen: ', greenScreen.get())
+    op1.delete(0, "end")
+    print('+: ', op1.get())
+    op1.insert(0, 3)
+    print('+: ', op1.get())
+    print()
 
 def get_subtraction(event=None):
-    firstVal = greenScreen.get()
+    firstVal.set(int(greenScreen.get()))
+    print('first: ', val1.get())
+    store.set(int(val1.get()))
+    print('val1storage: ', val1storage.get())
+    print('screen: ', greenScreen.get())
     greenScreen.delete(0, "end")
-    operator1 = 4
-    return firstVal, operator1
+    print('screen: ', greenScreen.get())
+    op1.delete(0, "end")
+    print('+: ', op1.get())
+    op1.insert(0, 4)
+    print('+: ', op1.get())
+    print()
 
 # Equivalence Button
-def get_equivalence(event, val1, op1):
-    val2 = greenScreen.get()
-    print(val1)
-    print(op1)
-    print(val2)
-    if op1 == 1:
-        result = val1 / val2
-        greenScreen.insert("end", result)
-    elif op1 == 2:
-        result = val1 * val2
-        greenScreen.insert("end", result)
-    elif op1 == 3:
-        result = val1 + val2
-        greenScreen.insert("end", result)
-    elif op1 == 4:
-        result = val1 - val2
-        greenScreen.insert("end", result)
+def get_equivalence(event=None):
+    if (greenScreen.get()).isdigit():
+        num1 = int(val1.get())
+        print('first: ', val1.get())
+        oper1 = int(op1.get())
+        print('+: ', op1.get())
+        num2 = int(greenScreen.get())
+        print('screen: ', greenScreen.get())
+        print()
+
+        if oper1 == 1:
+            result = num1 / num2
+            greenScreen.delete(0, "end")
+            greenScreen.insert("end", result)
+        elif oper1 == 2:
+            result = num1 * num2
+            greenScreen.delete(0, "end")
+            greenScreen.insert("end", result)
+        elif oper1 == 3:
+            result = num1 + num2
+            print("oper1: {}".format(result))
+            greenScreen.delete(0, "end")           
+            greenScreen.insert("end", result)
+        elif oper1 == 4:
+            result = num1 - num2
+            greenScreen.delete(0, "end")
+            greenScreen.insert("end", result)
+        else:
+            messagebox.showwarning("Syntax Error", "Choose operation first")
     else:
-        
-        # result=0
-        messagebox.showwarning("Syntax Error", "Choose operation first")
+        messagebox.showwarning("Syntax Error", "Please enter value")
 
+def get_ac(event=None):
+    store.set(0)
     greenScreen.delete(0, "end")
-    # greenScreen.insert("end", result)
-
-def get_ac():
-    firstVal = 0
-    greenScreen.delete(0, "end")
-
-# First and Second Value identification and sub_evaluation
-def get_data(event):
-    print("...getting data")
-    
 
 root = Tk()
-
-root.geometry("400x400+300+300")
-
+root.geometry("300x256+400+400")
+root.wm_title("Calculator Desktop App")
 root.resizable(width=False, height=False)
 
 frame = Frame(root)
 
-operator1 = IntVar()
+style = ttk.Style()
+
+style.configure("TButton",
+                foreground="midnight blue",
+                background="goldenrod3",
+                font= "Arial 20 bold")
+
+style.configure("TFrame",
+                foreground="midnight blue",
+                background="goldenrod1",
+                font= "Arial 20 bold")
+
+# this is responsive because I tested padding but otherwise doesn't work
+# may be that the Entry box is not linked to the style somehow
+style.configure("TEntry",
+                foreground="black",
+                background="orange",
+                font= "Arial 20 bold")
+
+# tkinter variables
 firstVal = IntVar()
+store = IntVar() # this might be an extra variable unless I can get the storage function to work
+operator1 = IntVar()
 
-operator1.set(0)
-firstVal.set(0)
+# value on greenScreen
+val1 = ttk.Entry(frame, textvariable=firstVal)
+# storage variable which can be used to get and set, if I can get it to work
+val1storage = ttk.Entry(frame, textvariable=store)
 
-# im confused when it comes to getting the button to connect
-# to the function... I can use commmand, textvariable, variable(for bool)
+# value upon operation key
+op1 = ttk.Entry(frame, textvariable=operator1)
+
 # Green Screen
-greenScreen = ttk.Entry(frame, width=54, justify=RIGHT)
-greenScreen.grid(row=0, column=0, columnspan=4, padx=5, pady=4)
-
+greenScreen = ttk.Entry(frame, width=28, justify=RIGHT)
+greenScreen.grid(row=0, column=0, columnspan=4, padx=3, pady=4, ipadx=41, ipady=12)
 
 # Number Keys
-sevenB = ttk.Button(frame, text="7", command=sevenIn)
-sevenB.grid(row=1, column=0, padx=5, pady=2)
-eightB = ttk.Button(frame, text="8", command=eightIn)
-eightB.grid(row=1, column=1, padx=5, pady=2)
-nineB = ttk.Button(frame, text="9", command=nineIn)
-nineB.grid(row=1, column=2, padx=5, pady=2)
+sevenB = ttk.Button(frame, text="7", width=3, command=sevenIn)
+sevenB.grid(row=1, column=0, padx=3, pady=2, ipadx=0, ipady=0)
+eightB = ttk.Button(frame, text="8", width=3, command=eightIn)
+eightB.grid(row=1, column=1, padx=3, pady=2, ipadx=0, ipady=0)
+nineB = ttk.Button(frame, text="9", width=3, command=nineIn)
+nineB.grid(row=1, column=2, padx=3, pady=2, ipadx=0, ipady=0)
 
-fourB = ttk.Button(frame, text="4", command=fourIn)
-fourB.grid(row=2, column=0, padx=5, pady=2)
-fiveB = ttk.Button(frame, text="5", command=fiveIn)
-fiveB.grid(row=2, column=1, padx=5, pady=2)
-sixB = ttk.Button(frame, text="6", command=sixIn)
-sixB.grid(row=2, column=2, padx=5, pady=2)
+fourB = ttk.Button(frame, text="4", width=3, command=fourIn)
+fourB.grid(row=2, column=0, padx=3, pady=2, ipadx=0, ipady=0)
+fiveB = ttk.Button(frame, text="5", width=3, command=fiveIn)
+fiveB.grid(row=2, column=1, padx=3, pady=2, ipadx=0, ipady=0)
+sixB = ttk.Button(frame, text="6", width=3, command=sixIn)
+sixB.grid(row=2, column=2, padx=3, pady=2, ipadx=0, ipady=0)
 
-oneB = ttk.Button(frame, text="4", command=oneIn)
-oneB.grid(row=3, column=0, padx=5, pady=2)
-twoB = ttk.Button(frame, text="5", command=twoIn)
-twoB.grid(row=3, column=1, padx=5, pady=2)
-threeB = ttk.Button(frame, text="6", command=threeIn)
-threeB.grid(row=3, column=2, padx=5, pady=2)
+oneB = ttk.Button(frame, text="1", width=3, command=oneIn)
+oneB.grid(row=3, column=0, padx=3, pady=2, ipadx=0, ipady=0)
+twoB = ttk.Button(frame, text="2", width=3, command=twoIn)
+twoB.grid(row=3, column=1, padx=3, pady=2, ipadx=0, ipady=0)
+threeB = ttk.Button(frame, text="3", width=3, command=threeIn)
+threeB.grid(row=3, column=2, padx=3, pady=2, ipadx=0, ipady=0)
 
-zeroB = ttk.Button(frame, text="0", command=zeroIn)
-zeroB.grid(row=4, column=1, padx=5, pady=2)
+zeroB = ttk.Button(frame, text="0", width=3, command=zeroIn)
+zeroB.grid(row=4, column=1, padx=3, pady=2, ipadx=0, ipady=0)
 
 # Operations Keys
-divisionB = ttk.Button(frame, text="/", command=get_division)
-divisionB.grid(row=1, column=3, padx=5, pady=2)
+divisionB = ttk.Button(frame, text="/", width=3, command=get_division)
+divisionB.grid(row=1, column=3, padx=3, pady=2, ipadx=0, ipady=0)
 
-multiplicationB = ttk.Button(frame, text="*", command=get_multiplication)
-multiplicationB.grid(row=2, column=3, padx=5, pady=2)
+multiplicationB = ttk.Button(frame, text="*", width=3, command=get_multiplication)
+multiplicationB.grid(row=2, column=3, padx=3, pady=2, ipadx=0, ipady=0)
 
-additionB = ttk.Button(frame, text="+")
+additionB = ttk.Button(frame, text="+", width=3)
 additionB.bind("<Button-1>", get_addition)
-additionB.grid(row=3, column=3, padx=5, pady=2)
+additionB.grid(row=3, column=3, padx=3, pady=2, ipadx=0, ipady=0)
 
-subtractionB = ttk.Button(frame, text="-", command=get_subtraction)
-subtractionB.grid(row=4, column=3, padx=5, pady=2)
+subtractionB = ttk.Button(frame, text="-", width=3, command=get_subtraction)
+subtractionB.grid(row=4, column=3, padx=3, pady=2, ipadx=0, ipady=0)
 
 # Equivalence Key
-equivalenceB = ttk.Button(frame, text="=")
-equivalenceB.bind("<Button-1>", get_equivalence("<Button-1>", firstVal, operator1))
-equivalenceB.grid(row=4, column=2, padx=5, pady=2)
+equivalenceB = ttk.Button(frame, text="=", width=3)
+equivalenceB.bind("<Button-1>", get_equivalence)
+equivalenceB.grid(row=4, column=2, padx=3, pady=2, ipadx=0, ipady=0)
 
 # All Clear Key
-allClearB = ttk.Button(frame, text="AC", command=get_ac)
-allClearB.grid(row=4, column=0, padx=5, pady=2)
+allClearB = ttk.Button(frame, text="AC", width=3, command=get_ac)
+allClearB.grid(row=4, column=0, padx=3, pady=2, ipadx=0, ipady=0)
 
 
 
