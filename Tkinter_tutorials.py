@@ -1350,9 +1350,9 @@ def get_division(event=None):
     greenScreen.delete(0, "end")
     print('screen: ', greenScreen.get())
     op1.delete(0, "end")
-    print('+: ', op1.get())
+    print('/: ', op1.get())
     op1.insert(0, 1)
-    print('+: ', op1.get())
+    print('/: ', op1.get())
     print()
 
 def get_multiplication(event=None):
@@ -1364,9 +1364,9 @@ def get_multiplication(event=None):
     greenScreen.delete(0, "end")
     print('screen: ', greenScreen.get())
     op1.delete(0, "end")
-    print('+: ', op1.get())
+    print('*: ', op1.get())
     op1.insert(0, 2)
-    print('+: ', op1.get())
+    print('*: ', op1.get())
     print()
 
 def get_addition(event=None):
@@ -1392,9 +1392,9 @@ def get_subtraction(event=None):
     greenScreen.delete(0, "end")
     print('screen: ', greenScreen.get())
     op1.delete(0, "end")
-    print('+: ', op1.get())
+    print('-: ', op1.get())
     op1.insert(0, 4)
-    print('+: ', op1.get())
+    print('-: ', op1.get())
     print()
 
 # Equivalence Button
