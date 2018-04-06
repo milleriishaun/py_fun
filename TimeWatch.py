@@ -1,12 +1,21 @@
-# Make this GUI for SOMETHING!
-# need GUI for TimeWatch app!
-# Nearly completed,
-# Need more tutorials to solve this correctly.
-# Not using proper format to get results correctly.
-# Need to use function and see how to properly organize the info.
+'''
+User Case Description
 
-# Make the clock system
+This is a StopWatch called TimeWatch
 
+I. The current time is displayed on first row.
+    N1. Split current time into different variables. (Class Field integers)
+II. User clicks a start button and the time is printed to the right. (self, current time)
+    N2. Store the start time into a variable.
+III. User clicks a stop button and the time is printed to the right. (self, current time)
+    N2. Store the stop time into a variable.
+IV. User clicks a difference button and the difference is printed to the right. (self, )
+
+
+Note 1: Need to split the parts of the time into different variables. (Class Field integers)
+Note 2: Need to store the value of the current time.
+
+'''
 
 # Modules go here
 import math
@@ -16,167 +25,156 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkinter import font
 
-# Functions go here
+class TimeWatch:
 
-def tick():
-    global time1
-    global timeHour1
-    global timeMin1
-    global timeSec1
+    # Store start time and stop time
+    start_abstraction = ""
+    stop_abstraction = ""
 
-
-    # Current local time
-    time2 = time.strftime('%H:%M:%S')
-    timeHour2 = time.strftime('%H')
-    timeMin2 = time.strftime('%M')
-    timeSec2 = time.strftime('%S')
-    # update time1 if old
-    if time2 != time1:
-        time1 = time2
-        timeHour1 = timeHour2
-        timeMin1 = timeMin2
-        timeSec1 = timeSec2
-        clock_output.config(text=time2)
-    # calls self every 200 milliseconds, recursive
-    clock_output.after(200, tick)
-
-def print_start(event=None):
-    startBut.bind("<Button-1>")
-    startTime['text'] = time1
-
-def print_end(event=None):
-    stopBut.bind("<Button-1>")
-    stopTime['text'] = time1
-
-def time_diff(*args):
-
-    try:
-        
-        if (stopHourInt-startHourInt) < 1:
-            startMinInt += 60
-            if stopMinInt-startMinInt < 0:
-                stopMinInt += 60
-        elif (stopMinInt-startMinInt) < 1:
-            startSecInt += 60
-            if stopSecInt-startSecInt < 0:
-                stopSecInt += 60
-        else:
-            diffHour = stopHourInt - startHourInt
-            diffMin = stopMinInt - startMinInt
-            diffSec = stopSecInt - startSecInt
-            print(diffHour+':'+diffMin+':'+diffSec)
-            diffTime['text'] = diffHour
-    except ValueError:
+    # Current Time
+    def tick(self):
         pass
 
-# Create a GUI for button to click to start the time and end the time
 
-# make the root
-root = Tk()
+    def print_start(self, event=None):
+        self.startBut.bind("<Button-1>")
+        self.start_abstraction = str(self.time1.get())
+        self.startTime['text'] = self.start_abstraction
 
-time1 = StringVar()
+    def print_end(self, event=None):
+        self.stopBut.bind("<Button-1>")
+        self.stop_abstraction = str(self.time1.get())
+        self.stopTime['text'] = self.stop_abstraction
 
-# startHourInt = int(timeHour1)
-# startMinInt = int(timeMin1)
-# startSecInt = int(timeSec1)
-# stopHourInt = int(timeHour1)
-# stopMinInt = int(timeMin1)
-# stopSecInt = int(timeSec1)
+    def time_diff(self, event=None):
 
-# Title the window
-root.wm_title("TimeWatch")
+        self.diffBut.bind("<Button-1>")
 
-# Set the geometry of the window
-root.geometry("400x400+300+300")
+        self.startHour = int(self.start_abstraction[0:2])
+        self.startMin = int(self.start_abstraction[3:5])
+        self.startSec = int(self.start_abstraction[6:8])
 
-# window cannot be resized
-root.resizable(width=False, height=False)
+        self.stopHour = int(self.stop_abstraction[0:2])
+        self.stopMin = int(self.stop_abstraction[3:5])
+        self.stopSec = int(self.stop_abstraction[6:8])
 
-# color the window
-root.config(bg="orange")
+        try:
+            if (self.stopHour-self.startHour) < 1:
+                self.startMin += 60
+                if self.stopMin-self.startMin < 0:
+                    self.stopMin += 60
+            elif (self.stopMin-self.startMin) < 1:
+                self.startSec += 60
+                if self.stopSec-self.startSec < 0:
+                    self.stopSec += 60
+            else:
+                diffHour = self.stopHour - self.startHour
+                diffMin = self.stopMin - self.startMin
+                diffSec = self.stopSec - self.startSec
+                diff_solution = str(diffHour) + ':' + str(diffMin) + ':' + str(diffSec)
+                print(diff_solution)
+                self.diffTime['text'] = diff_solution
 
-# Create a frame for the clock
-frameTop = Frame(root)
-frameTop.grid(row=0, column=0, padx=5, pady=5)
+        except ValueError:
+            print("something wrong in time_diff function")
 
-# Create a frame for the two buttons
-frameBottom = Frame(root)
-frameBottom.grid(row=1, column=0, padx=5, pady=5)
+    def __init__(self, root):
 
-# Style up the Buttons to make them look ultracool
-style = ttk.Style()
-style.configure("TButton",
-                bg="white",
-                fg="blue",
-                font="Mistral 20 bold",
-                padding=20)
+        # Create a GUI for button to click to start the time and end the time
+        root.wm_title("TimeWatch")
+        root.geometry("500x800+300+100")
+        root.resizable(width=False, height=False)
+        root.config(background="orange")
 
-# Make a label for the top frame
-clock_name = Label(frameTop, text="Clock")
-clock_name.grid(row=0, column=0, padx=5, pady=5)
+        # Style up the Buttons to make them look ultracool
+        style = ttk.Style()
+        style.configure("TLabel",
+                        bg="white",
+                        fg="blue",
+                        font="Mistral 20 bold",
+                        padding=20)
+        style.configure("TLabel",
+                        bg="white",
+                        fg="blue",
+                        font="Mistral 20 bold",
+                        padding=20)
+        style.configure("TButton",
+                        bg="white",
+                        fg="blue",
+                        font="Mistral 20 bold",
+                        padding=20)
 
-# Make a text box for the clock time reads
-# Text(frameTop, textvariable="{}:{}:{}".format(time2[3], time2[4], time2[5]))
-clock_output = Label(frameTop)
-clock_output.grid(row=1, column=0, padx=5, pady=5)
+        # This textvariable will control time
+        self.time2 = StringVar()
 
-print(time1)
+        # Create a frame for the clock
+        self.frameTop = ttk.Frame(root)
+        self.frameTop.grid(row=0, column=0, padx=5, pady=5)
 
-# Make first button
-startBut = ttk.Button(frameBottom, text="start timer", command=print_start)
-startBut.bind("<Button-1>")
-# Position first button, will position better next time
-startBut.grid(row=0, column=0, padx=5, pady=5)
+        # Create a frame for the two buttons
+        self.frameBottom = ttk.Frame(root)
+        self.frameBottom.grid(row=1, column=0, padx=5, pady=5)
 
-# Make start label
-startLab = Label(frameBottom, text="start time: ")
-startLab.grid(row=0, column=1, padx=5, pady=5)
+        # Make a label for the top frame
+        self.clock_name = ttk.Label(self.frameTop, text="Clock")
+        self.clock_name.grid(row=0, column=0, padx=5, pady=5)
 
-# Show the new time saved
-startTime = Label(frameBottom)
-startTime.grid(row=0, column=2, padx=5, pady=5)
+        # Make a text box for the clock time reads
+        self.clock_output = ttk.Label(self.frameTop)
+        self.clock_output.grid(row=1, column=0, padx=5, pady=5)
 
-# Make second button
-stopBut = ttk.Button(frameBottom, text="stop timer", command=print_end)
-stopBut.bind("<Button-1>")
-# Position first button, will position better next time
-stopBut.grid(row=1, column=0, padx=5, pady=5)
+        # Start Button
+        self.startBut = ttk.Button(self.frameBottom, text="start timer", command=lambda: self.print_start())
+        self.startBut.grid(row=0, column=0, padx=5, pady=5)
+        self.startLab = ttk.Label(self.frameBottom, text="start time: ")
+        self.startLab.grid(row=0, column=1, padx=5, pady=5)
+        self.startTime = ttk.Label(self.frameBottom)
+        self.startTime.grid(row=0, column=2, padx=5, pady=5)
 
-# Make stop label
-stopLab = Label(frameBottom, text="stop time: ")
-stopLab.grid(row=1, column=1, padx=5, pady=5)
+        # Stop Button
+        self.stopBut = ttk.Button(self.frameBottom, text="stop timer", command=lambda: self.print_end())
+        self.stopBut.grid(row=1, column=0, padx=5, pady=5)
+        self.stopLab = ttk.Label(self.frameBottom, text="stop time: ")
+        self.stopLab.grid(row=1, column=1, padx=5, pady=5)
+        self.stopTime = ttk.Label(self.frameBottom)
+        self.stopTime.grid(row=1, column=2, padx=5, pady=5)
 
-# Show the new time saved
-stopTime = Label(frameBottom)
-stopTime.grid(row=1, column=2, padx=5, pady=5)
+        # Difference Button
+        self.diffBut = ttk.Button(self.frameBottom, text="Calc Difference!", command=lambda: self.time_diff())
+        self.diffBut.grid(row=2, column=0, padx=5, pady=5)
+        self.diffLab = ttk.Label(self.frameBottom, text="time difference: ")
+        self.diffLab.grid(row=2, column=1, padx=5, pady=5)
 
-
-# Make third button
-diffBut = ttk.Button(frameBottom, text="Calc Difference!", command=time_diff)
-diffBut.bind("<Button-1>")
-# Position first button, will position better next time
-diffBut.grid(row=2, column=0, padx=5, pady=5)
-
-# Add new feature of Time difference
-diffLab = ttk.Label(frameBottom, text="time difference: ")
-diffLab.grid(row=2, column=1, padx=5, pady=5)
-
+        # Show the time difference
+        self.diffTime = ttk.Label(self.frameBottom)
+        self.diffTime.grid(row=2, column=2, padx=5, pady=5)
 
 
-# time_diff()
-# if (startTime['text']) and (stopTime['text']):
-#     time_diff()
-#     print('works')
 
-diffTime = Label(frameBottom)
-diffTime.grid(row=2, column=2, padx=5, pady=5)
+    def __iter__(self):
+        return self
 
-# Show the available fonts
-for x in font.families():
-    print(x)
-    
+    def __next__(self):
+        time1 = ""
+        # Store current local time
+        self.time2 = time.strftime('%H:%M:%S')
+        print(self.time2)
+        
+        # update time1 if old
+        if self.time2 != time1:
+            time1 = self.time2
+        
+            self.clock_output.config(text=self.time2)
+            # calls self every 200 milliseconds, recursive
+            self.clock_output.after(200)
+            return 
+        else:
+            raise StopIteration
 
-tick()
+def main():
 
-root.mainloop()
+    root = Tk()
+    stopTimer = TimeWatch(root)
+    root.mainloop()
 
+main()
