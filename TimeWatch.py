@@ -33,17 +33,27 @@ class TimeWatch:
 
     # Current Time
     def tick(self):
-        pass
+        time1 = ""
+        # Store current local time
+        self.time2 = time.strftime('%H:%M:%S')
+        
+        # update time1 if old
+        if self.time2 != time1:
+            time1 = self.time2
+        
+            # calls self every 200 milliseconds, recursive
+            self.clock_output.config(text=self.time2)
+            self.clock_output.after(200, self.tick)
 
 
     def print_start(self, event=None):
         self.startBut.bind("<Button-1>")
-        self.start_abstraction = str(self.time1.get())
+        self.start_abstraction = self.time2
         self.startTime['text'] = self.start_abstraction
 
     def print_end(self, event=None):
         self.stopBut.bind("<Button-1>")
-        self.stop_abstraction = str(self.time1.get())
+        self.stop_abstraction = self.time2
         self.stopTime['text'] = self.stop_abstraction
 
     def time_diff(self, event=None):
@@ -58,51 +68,48 @@ class TimeWatch:
         self.stopMin = int(self.stop_abstraction[3:5])
         self.stopSec = int(self.stop_abstraction[6:8])
 
-        try:
-            if (self.stopHour-self.startHour) < 1:
-                self.startMin += 60
-                if self.stopMin-self.startMin < 0:
-                    self.stopMin += 60
-            elif (self.stopMin-self.startMin) < 1:
-                self.startSec += 60
-                if self.stopSec-self.startSec < 0:
-                    self.stopSec += 60
-            else:
-                diffHour = self.stopHour - self.startHour
-                diffMin = self.stopMin - self.startMin
-                diffSec = self.stopSec - self.startSec
-                diff_solution = str(diffHour) + ':' + str(diffMin) + ':' + str(diffSec)
-                print(diff_solution)
-                self.diffTime['text'] = diff_solution
+        diffHour = self.stopHour - self.startHour
+        diffMin = self.stopMin - self.startMin
+        diffSec = self.stopSec - self.startSec
 
-        except ValueError:
-            print("something wrong in time_diff function")
+        # all cases for negative time difference
+        if diffHour < 0:
+            return
+        elif diffMin < 0:
+            print("negative min")
+            return
+        elif diffSec < 0:
+            print("negative sec")
+            return
+        else:
+            diff_solution = str(diffHour) + ':' + str(diffMin) + ':' + str(diffSec)
+            self.diffTime['text'] = diff_solution
 
     def __init__(self, root):
 
         # Create a GUI for button to click to start the time and end the time
         root.wm_title("TimeWatch")
-        root.geometry("500x800+300+100")
+        root.geometry("660x360+300+100")
         root.resizable(width=False, height=False)
-        root.config(background="orange")
+        root.config(background="dark slate gray")
 
         # Style up the Buttons to make them look ultracool
         style = ttk.Style()
         style.configure("TLabel",
-                        bg="white",
-                        fg="blue",
+                        background="dark slate gray",
+                        foreground="midnight blue",
                         font="Mistral 20 bold",
-                        padding=20)
+                        padding=5)
         style.configure("TLabel",
-                        bg="white",
-                        fg="blue",
-                        font="Mistral 20 bold",
-                        padding=20)
+                        background="medium turquoise",
+                        foreground="midnight blue",
+                        font="Arial 20 bold",
+                        padding=5)
         style.configure("TButton",
-                        bg="white",
-                        fg="blue",
-                        font="Mistral 20 bold",
-                        padding=20)
+                        background="light sky blue",
+                        foreground="midnight blue",
+                        font="Arial 20 bold",
+                        padding=5)
 
         # This textvariable will control time
         self.time2 = StringVar()
@@ -111,31 +118,34 @@ class TimeWatch:
         self.frameTop = ttk.Frame(root)
         self.frameTop.grid(row=0, column=0, padx=5, pady=5)
 
-        # Create a frame for the two buttons
+        # Create a frame for the three buttons
         self.frameBottom = ttk.Frame(root)
         self.frameBottom.grid(row=1, column=0, padx=5, pady=5)
 
+        # root.grid_rowconfigure(0, weight=1)
+        root.grid_columnconfigure(0, weight=1)
+
         # Make a label for the top frame
         self.clock_name = ttk.Label(self.frameTop, text="Clock")
-        self.clock_name.grid(row=0, column=0, padx=5, pady=5)
+        self.clock_name.grid(row=0, columnspan=3, padx=5, pady=5)
 
         # Make a text box for the clock time reads
         self.clock_output = ttk.Label(self.frameTop)
-        self.clock_output.grid(row=1, column=0, padx=5, pady=5)
+        self.clock_output.grid(row=1, columnspan=3, padx=5, pady=5)
 
         # Start Button
         self.startBut = ttk.Button(self.frameBottom, text="start timer", command=lambda: self.print_start())
-        self.startBut.grid(row=0, column=0, padx=5, pady=5)
+        self.startBut.grid(row=0, column=0, padx=5, pady=5, sticky="e")
         self.startLab = ttk.Label(self.frameBottom, text="start time: ")
-        self.startLab.grid(row=0, column=1, padx=5, pady=5)
+        self.startLab.grid(row=0, column=1, padx=5, pady=5, sticky="e")
         self.startTime = ttk.Label(self.frameBottom)
         self.startTime.grid(row=0, column=2, padx=5, pady=5)
 
         # Stop Button
         self.stopBut = ttk.Button(self.frameBottom, text="stop timer", command=lambda: self.print_end())
-        self.stopBut.grid(row=1, column=0, padx=5, pady=5)
+        self.stopBut.grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.stopLab = ttk.Label(self.frameBottom, text="stop time: ")
-        self.stopLab.grid(row=1, column=1, padx=5, pady=5)
+        self.stopLab.grid(row=1, column=1, padx=5, pady=5, sticky="e")
         self.stopTime = ttk.Label(self.frameBottom)
         self.stopTime.grid(row=1, column=2, padx=5, pady=5)
 
@@ -149,32 +159,13 @@ class TimeWatch:
         self.diffTime = ttk.Label(self.frameBottom)
         self.diffTime.grid(row=2, column=2, padx=5, pady=5)
 
-
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        time1 = ""
-        # Store current local time
-        self.time2 = time.strftime('%H:%M:%S')
-        print(self.time2)
-        
-        # update time1 if old
-        if self.time2 != time1:
-            time1 = self.time2
-        
-            self.clock_output.config(text=self.time2)
-            # calls self every 200 milliseconds, recursive
-            self.clock_output.after(200)
-            return 
-        else:
-            raise StopIteration
+        # self.tick()
 
 def main():
 
     root = Tk()
     stopTimer = TimeWatch(root)
+    stopTimer.tick()
     root.mainloop()
 
 main()
