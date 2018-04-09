@@ -1303,7 +1303,7 @@ root.config(menu=the_menu) # this is to show the menu updates
 root.mainloop()
 '''
 
-
+'''
 # Calculator App in Python using TkInter
 from tkinter import *
 from tkinter import messagebox
@@ -1530,7 +1530,7 @@ allClearB.grid(row=4, column=0, padx=3, pady=2, ipadx=0, ipady=0)
 frame.pack()
 
 root.mainloop()
-
+'''
 
 '''
 # review of Tkinter(Derek Banas) Part 1
@@ -1616,3 +1616,133 @@ getDataButton.pack(side=LEFT)
 
 root.mainloop()
 '''
+
+'''
+from tkinter import *
+import tkinter.filedialog
+
+class TextEditor:
+
+    @staticmethod
+    def quit_app(event=None):
+        root.quit()
+    
+    def open_file(self, event=None):
+
+        txt_file = tkinter.filedialog.askopenfilename(parent=root,
+                                    initialdir='C:/Users/Shaun/Anaconda3/envs/pyfun/pyfun')
+    
+        if txt_file:
+
+            self.text_area.delete(1.0, END)
+
+            with open(txt_file) as _file:
+                self.text_area.insert(1.0, _file.read())
+
+                # update the text widget
+                root.update_idletasks()
+    
+    def save_file(self, even=None):
+        file = tkinter.filedialog.asksaveasfile(mode='w')
+
+        if file != None:
+            data = self.text_area.get('1.0', END + '-1c')
+
+            file.write(data)
+            file.close()
+        
+    def __init__(self, root):
+        self.text_to_write = ""
+
+        root.title("Text Editor")
+
+        root.geometry("600x550")
+
+        frame = Frame(root, width=600, height=550)
+
+        scrollbar = Scrollbar(frame)
+
+        self.text_area = Text(frame, width=600, height=550,
+                            yscrollcommand=scrollbar.set,
+                            padx=10, pady=10)
+        
+        scrollbar.config(command=self.text_area.yview)
+
+        scrollbar.pack(side="right", fill="y")
+
+        self.text_area.pack(side="left", fill="both", expand=True)
+
+        frame.pack()
+
+        the_menu = Menu(root)
+
+        file_menu = Menu(the_menu, tearoff=0)
+        file_menu.add_command(label="Open", command=self.open_file)
+        file_menu.add_command(label="Save", command=self.save_file)
+
+        file_menu.add_separator()
+
+        file_menu.add_command(label="Quit", command=self.quit_app)
+
+        the_menu.add_cascade(label="File", menu=file_menu)
+
+        root.config(menu=the_menu)
+
+
+root = Tk()
+
+text_editor = TextEditor(root)
+
+root.mainloop()
+'''
+
+from tkinter import *
+from PIL import Image, ImageTk
+
+class TkInterEx:
+
+    @staticmethod
+    def quit_app(event=None):
+        root.quit()
+
+    def __init__(self, root):
+        root.title("Toolbar Example")
+        menubar = Menu(root)
+
+        file_menu = Menu(root, tearoff=0)
+        file_menu.add_command(label="Open")
+        file_menu.add_command(label="Save")
+        file_menu.add_command(label="Exit", command=self.quit_app)
+
+        menubar.add_cascade(label="File", menu=file_menu)
+
+        # Create the toolbar
+        toolbar = Frame(root, bd=1, relief=RAISED)
+
+        open_img = Image.open("open.png")
+        save_img = Image.open("save.png")
+        exit_img = Image.open("exit.png")
+
+        open_icon = ImageTk.PhotoImage(open_img)
+        save_icon = ImageTk.PhotoImage(save_img)
+        exit_icon = ImageTk.PhotoImage(exit_img)
+
+        open_button = Button(toolbar, image=open_icon)
+        save_button = Button(toolbar, image=save_icon)
+        exit_button = Button(toolbar, image=exit_icon, command=self.quit_app)
+
+        open_button.image = open_icon
+        save_button.image = save_icon
+        exit_button.image = exit_icon
+
+        open_button.pack(side=LEFT, padx=2, pady=2)
+        save_button.pack(side=LEFT, padx=2, pady=2)
+        exit_button.pack(side=LEFT, padx=2, pady=2)
+
+        toolbar.pack(side=TOP, fill=X)
+        root.config(menu=menubar)
+    
+root = Tk()
+root.geometry("600x550")
+app = TkInterEx(root)
+root.mainloop()
