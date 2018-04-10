@@ -16,6 +16,9 @@ helloKivy = HelloKivyApp()
 helloKivy.run()
 '''
 
+
+'''
+# Static layout for Kivy
 import kivy
 kivy.require("1.9.0")
 
@@ -32,3 +35,25 @@ class CustomWidgetApp(App):
 
 customWidget = CustomWidgetApp()
 customWidget.run()
+
+'''
+
+'''
+# Float layout for Kivy
+import kivy
+kivy.require("1.9.0")
+
+from kivy.app import App
+from kivy.uix.floatlayout import FloatLayout
+
+
+class FloatingApp(App):
+
+    def build(self):
+        return FloatLayout()
+
+flApp = FloatingApp()
+flApp.run()
+'''
+
+# Grid layout for Kivy
