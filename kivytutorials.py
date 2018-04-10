@@ -56,4 +56,56 @@ flApp = FloatingApp()
 flApp.run()
 '''
 
+
+'''
 # Grid layout for Kivy
+import kivy
+kivy.require("1.9.0")
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+
+
+class GridLayoutApp(App):
+
+    def build(self):
+        return GridLayout()
+
+glApp = GridLayoutApp()
+glApp.run()
+'''
+
+'''
+# Box layout for Kivy
+import kivy
+kivy.require("1.9.0")
+
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+
+
+class BoxLayoutApp(App):
+
+    def build(self):
+        return BoxLayout()
+
+blApp = BoxLayoutApp()
+blApp.run()
+'''
+
+
+# Stack layout for Kivy
+import kivy
+kivy.require("1.9.0")
+
+from kivy.app import App
+from kivy.uix.stacklayout import StackLayout
+
+
+class StackLayoutApp(App):
+
+    def build(self):
+        return StackLayout()
+
+slApp = StackLayoutApp()
+slApp.run()
