@@ -187,6 +187,8 @@ dbApp = StudentDBApp()
 dbApp.run()
 '''
 
+
+'''
 import kivy
 kivy.require("1.9.0")
 
@@ -199,6 +201,37 @@ class SampGridLayout(GridLayout):
 class SampleApp(App):
     def build(self):
         return SampGridLayout()
+
+sample_app = SampleApp()
+sample_app.run()
+'''
+
+import kivy
+kivy.require("1.9.0")
+
+from kivy.app import App
+from kivy.uix.laxlayout import BoxLayout
+from kivy.properties import ObjectProperty
+from kivy.core.window import Window
+from kivy.uix.popup import Popup
+
+class CustomPopup(Popup):
+    pass
+
+class SampBoxLayout(BoxLayout):
+
+    checkbox_is_active = ObjectProperty(FAlse)
+
+    def checkbox_18_clicked(self, instance, value):
+        if value is True:
+            print("Checkbox Checked")
+        else:
+            print("Checkbox Not Clicked")
+
+class SampApp(App):
+    def build(self):
+        Window.clearcolor = (1, 1, 1, 1)
+        return SampBoxLayout()
 
 sample_app = SampleApp()
 sample_app.run()
