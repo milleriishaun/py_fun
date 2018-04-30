@@ -292,7 +292,7 @@ class ScreenTwo(Screen):
 
 screen_manager = ScreenManager()
 
-screen_manager.add_widget(ScreenOne(name="screen_one"))
+screen_manager.add_widgest(ScreenOne(name="screen_one"))
 screen_manager.add_widget(ScreenTwo(name="screen_two"))
 
 class KivyTut2App(App):
@@ -301,3 +301,22 @@ class KivyTut2App(App):
 
 sample_app = KivyTut2App()
 sample_app.run()
+
+# I learned Django after this, and that was good for learning about
+# web frameworks and really what people are looking for.
+# After learning Django, I found out that people are looking for MEAN stack and
+# MERN stack. Now that I have a working part of the MEAN stack but am not finding
+# too many structured tutorials, I am kind of bogged down. I can learn it though.
+# What I'll try to do is learn the MEAN stack enough to get things moving,
+# but not learn it so well that I can only use it. I will need to stick with MEAN and MERN
+# for about 2 weeks and learn all that I can about them in that time.
+# Once it is finished and I have some work that I can show, I want to dive into other tutorials.
+# I want to get the hackrank stuff in. I want to try. Also I want that certificate from freecodecamp.
+# Other than that, I want to develop that app for the church that we've been talking about.
+# Another thing I can do is find the documentations for individual MEAN?MERN pieces to know more in depth.
+# Another thing I can do is practice typing and practice writing out the code so it works. THis would be python.
+# I can focus on software development, while continuing with software engineering(trying to connect everything).
+# I should think what I will be hired to do: JAVA with the Spring framework(these are big companies hiring, so need CS degree)
+# ... or Kotlin for Android. PHP 7 is powerful right now(also king od freelance... with Laravel/Symphony), 80% of businesses, apps like Facebook. IBM took on Swift(really fast), just ios apps.
+# not server-side. I could also learn CRUD operations with Databases even faster and more efficiently.
+# C# with web apps... fast games(UNITY) using asp.NET framework(mainly working for a company). Common for Microsoft projects. 
